@@ -1,0 +1,71 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+package-lock.json
+
+# Testing
+/coverage/
+
+# Production
+/build/
+
+# Miscellaneous
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories and files
+.vscode/
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Dependencies (again)
+/node_modules
+/.pnp
+.pnp.js
+
+# Additional Files
+/haha/
+app.yaml
+.gcloudignore
+
+# Yarn
+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Swap the comments on the following lines if you don't wish to use zero-installs
+# Documentation here: https://yarnpkg.com/features/zero-installs
+#.yarn/cache
+.pnp.*
+
+# netlify stuff
+/public/_redirects
