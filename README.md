@@ -28,7 +28,7 @@ This is a simple point of sale (POS) app designed for a small coffee shop.
 
 ## Getting Started
 
-1. Clone the repository: `git clone https://github.com:dinhlab/effective-goggles.git`
+1. Clone the repository: `git clone https://github.com/dinhlab/effective-goggles.git`
 2. Install dependencies: `npm install` or `yarn install`
 3. Start the development server: `npm start` or `yarn start`
 

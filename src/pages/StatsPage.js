@@ -18,10 +18,11 @@ function StatsPage () {
   if (isLoading) {
     return (
       <Container sx={{ mt: 2 }}>
-        <LoadingScreen />
-        <Typography mt={2} variant='h6' gutterBottom component='h1'>
+
+        <Typography mt={2} variant='caption' gutterBottom component='h1'>
           Loading Charts ...
         </Typography>
+        <LoadingScreen />
       </Container>
     )
   } else if (error) {

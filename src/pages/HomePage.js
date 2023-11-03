@@ -164,14 +164,14 @@ function HomePage () {
   }
   if (productIsLoading) {
     return (
-      <Typography mt={2} variant='h6' gutterBottom component='h1'>
+      <Typography mt={2} variant='caption' gutterBottom component='h1'>
         Loading Products ...
       </Typography>
     )
   }
   if (categoryIsLoading) {
     return (
-      <Typography mt={2} variant='h6' gutterBottom component='h1'>
+      <Typography mt={2} variant='caption' gutterBottom component='h1'>
         Loading Categories ...
       </Typography>
     )
