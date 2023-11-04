@@ -56,8 +56,8 @@ export const createProduct =
         toast.success('Created product successfully')
         dispatch(getProducts())
       } catch (error) {
-        dispatch(productSlice.actions.hasError(error.message))
-        toast.error(error.message)
+        dispatch(productSlice.actions.hasError(error.error))
+        toast.error(error.error)
       }
     }
 
@@ -67,8 +67,8 @@ export const getProducts = () => async dispatch => {
     const response = await apiService.get('/products')
     dispatch(productSlice.actions.getProductSuccess(response.data))
   } catch (error) {
-    dispatch(productSlice.actions.hasError(error.message))
-    toast.error(error.message)
+    dispatch(productSlice.actions.hasError(error.error))
+    toast.error(error.error)
   }
 }
 
@@ -86,8 +86,8 @@ export const updateProduct = ({ id, name, price, imageLink, category }) => async
     toast.success('Updated product successfully')
     dispatch(getProducts())
   } catch (error) {
-    dispatch(productSlice.actions.hasError(error.message))
-    toast.error(error.message)
+    dispatch(productSlice.actions.hasError(error.error))
+    toast.error(error.error)
   }
 }
 
@@ -99,8 +99,8 @@ export const deleteProduct = (id) => async dispatch => {
     toast.success('Deleted product successfully')
     dispatch(getProducts())
   } catch (error) {
-    dispatch(productSlice.actions.hasError(error.message))
-    toast.error(error.message)
+    dispatch(productSlice.actions.hasError(error.error))
+    toast.error(error.error)
   }
 }
 

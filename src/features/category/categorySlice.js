@@ -52,8 +52,8 @@ export const createCategory =
         toast.success('Created category successfully')
         dispatch(getCategories())
       } catch (error) {
-        dispatch(categorySlice.actions.hasError(error.message))
-        toast.error(error.message)
+        dispatch(categorySlice.actions.hasError(error.error))
+        toast.error(error.error)
       }
     }
 
@@ -63,8 +63,8 @@ export const getCategories = () => async dispatch => {
     const response = await apiService.get('/categories')
     dispatch(categorySlice.actions.getCategorySuccess(response.data))
   } catch (error) {
-    dispatch(categorySlice.actions.hasError(error.message))
-    toast.error(error.message)
+    dispatch(categorySlice.actions.hasError(error.error))
+    toast.error(error.error)
   }
 }
 
@@ -79,8 +79,8 @@ export const updateCategory = ({ id, name, description }) => async dispatch => {
     toast.success('Updated category successfully')
     dispatch(getCategories())
   } catch (error) {
-    dispatch(categorySlice.actions.hasError(error.message))
-    toast.error(error.message)
+    dispatch(categorySlice.actions.hasError(error.error))
+    toast.error(error.error)
   }
 }
 
@@ -92,8 +92,8 @@ export const deleteCategory = (id) => async dispatch => {
     toast.success('Deleted category successfully')
     dispatch(getCategories())
   } catch (error) {
-    dispatch(categorySlice.actions.hasError(error.message))
-    toast.error(error.message)
+    dispatch(categorySlice.actions.hasError(error.error))
+    toast.error(error.error)
   }
 }
 

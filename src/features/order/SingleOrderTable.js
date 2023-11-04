@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   Table,
   TableBody,
@@ -10,7 +9,8 @@ import {
   IconButton,
   Stack
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
+import AddIcon from '@mui/icons-material/Add'
+import RemoveIcon from '@mui/icons-material/Remove'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { formatNumber } from '../../utils/formatNumber'
 
@@ -25,15 +25,16 @@ const SingleOrderTable = ({
   orderId,
   componentRef
 }) => {
+  const hasProductsInCart = Object.keys(cart).length > 0
   return (
     <TableContainer component={Paper}>
       <Table ref={componentRef} aria-label='simple table'>
         <TableHead>
           <TableRow>
-            <TableCell>Product Name</TableCell>
-            <TableCell align='right'>Number</TableCell>
-            <TableCell align='right'>Price</TableCell>
-            {!isCheckoutButtonDisabled && <TableCell>Edit</TableCell>}
+            <TableCell>Name</TableCell>
+            <TableCell>Quantity</TableCell>
+            <TableCell>Price</TableCell>
+            {!isCheckoutButtonDisabled && hasProductsInCart && <TableCell>Remove</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -51,25 +52,38 @@ const SingleOrderTable = ({
                 <TableCell component='th' scope='row'>
                   {product.name}
                 </TableCell>
-                <TableCell align='right'>{quantity}</TableCell>
-                <TableCell align='right'>
-                  {formatNumber(product.price * quantity)}
-                </TableCell>
-                {!isCheckoutButtonDisabled &&
-                  <TableCell>
-
-                    <Stack direction='row' spacing={1}>
-                      <IconButton onClick={() => handleEditQuantity(productId)}>
-                        <EditIcon />
+                <TableCell>
+                  <Stack direction='row' alignItems='center'>
+                    {!isCheckoutButtonDisabled && (
+                      <IconButton
+                        onClick={() => handleEditQuantity(productId, 'add')}
+                      >
+                        <AddIcon />
                       </IconButton>
+                    )}
+
+                    {quantity}
+                    {!isCheckoutButtonDisabled && (
+                      <IconButton
+                        onClick={() => handleEditQuantity(productId, 'remove')}
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                    )}
+                  </Stack>
+                </TableCell>
+                <TableCell>{formatNumber(product.price * quantity)}</TableCell>
+                {!isCheckoutButtonDisabled && hasProductsInCart && (
+                  <TableCell>
+                    <Stack direction='row' spacing={1}>
                       <IconButton
                         onClick={() => handleDeleteProduct(productId)}
                       >
                         <DeleteIcon />
                       </IconButton>
                     </Stack>
-
-                  </TableCell>}
+                  </TableCell>
+                )}
               </TableRow>
             )
           })}

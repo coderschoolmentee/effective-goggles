@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Typography, TextField, Stack } from '@mui/material'
+import { Container, Typography, TextField, Stack, Paper } from '@mui/material'
 import { getOrders } from '../features/order/orderSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
@@ -18,10 +18,6 @@ function StatsPage () {
   if (isLoading) {
     return (
       <Container sx={{ mt: 2 }}>
-
-        <Typography mt={2} variant='caption' gutterBottom component='h1'>
-          Loading Charts ...
-        </Typography>
         <LoadingScreen />
       </Container>
     )
@@ -83,23 +79,25 @@ function StatsPage () {
           Total: {formatNumber(totalAmountForSelectedDate)}
         </Typography>
       </Stack>
-      <BarChart
-        width={1200}
-        height={300}
-        data={chartData}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5
-        }}
-      >
-        <CartesianGrid strokeDasharray='5 5' />
-        <XAxis tick={{ fontSize: 12 }} dataKey='name' />
-        <YAxis tick={{ fontSize: 12 }} tickFormatter={formatNumber} />
-        <Tooltip formatter={formatNumber} />
-        <Bar dataKey='totalAmount' fill='#8884d8' />
-      </BarChart>
+      <Paper sx={{ overflowX: 'auto', p: 1 }}>
+        <BarChart
+          width={1000}
+          height={300}
+          data={chartData}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5
+          }}
+        >
+          <CartesianGrid strokeDasharray='3 3' />
+          <XAxis tick={{ fontSize: 12 }} dataKey='name' />
+          <YAxis tick={{ fontSize: 12 }} tickFormatter={formatNumber} />
+          <Tooltip formatter={formatNumber} />
+          <Bar dataKey='totalAmount' fill='#6D4C41' barSize={20} />
+        </BarChart>
+      </Paper>
     </Container>
   )
 }

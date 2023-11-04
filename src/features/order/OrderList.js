@@ -109,19 +109,10 @@ function OrderList () {
     setSelectedOrderId(null)
   }
   if (isLoading) {
-    return (
-      <>
-        <Typography mt={2} variant='caption' gutterBottom component='h1'>
-          Loading Orders ...
-        </Typography>
-        <LoadingScreen />
-      </>
-    )
+    return <LoadingScreen />
   }
   if (error) {
-    return (
-      <Typography>Error occurred while fetching orders: {error}</Typography>
-    )
+    return <Typography>Error occurred: {error}</Typography>
   }
   return (
     <>
@@ -209,13 +200,15 @@ function OrderList () {
           </TableBody>
         </Table>
       </TableContainer>
-      <Stack spacing={2}>
-        <Pagination
-          count={Math.ceil(orders.length / pageSize)}
-          page={page}
-          onChange={handleChange}
-        />
-      </Stack>
+      {orders.length !== 0 && (
+        <Stack spacing={2}>
+          <Pagination
+            count={Math.ceil(orders.length / pageSize)}
+            page={page}
+            onChange={handleChange}
+          />
+        </Stack>
+      )}
     </>
   )
 }

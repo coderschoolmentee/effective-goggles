@@ -27,7 +27,7 @@ const CustomizedTableRow = styled(TableRow)`
 
 function ProductList ({ handleOpenUpdateProduct }) {
   const [page, setPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState('') // State for search term
+  const [searchTerm, setSearchTerm] = useState('')
   const dispatch = useDispatch()
   const { isLoading, error, products } = useSelector((state) => state.product)
 
@@ -36,22 +36,12 @@ function ProductList ({ handleOpenUpdateProduct }) {
   }, [dispatch])
 
   if (isLoading) {
-    return (
-      <>
-        <Typography mt={2} variant='caption' gutterBottom component='h1'>
-          Loading Products ...
-        </Typography>
-        <LoadingScreen />
-      </>
-    )
+    return <LoadingScreen />
   }
   if (error) {
-    return (
-      <Typography>Error occurred while fetching products: {error}</Typography>
-    )
+    return <Typography>Error occurred: {error}</Typography>
   }
 
-  // Filter products based on search term
   const filteredProducts = products.filter((product) => {
     if (searchTerm) {
       return product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -59,7 +49,6 @@ function ProductList ({ handleOpenUpdateProduct }) {
     return true
   })
 
-  // Pagination
   const pageSize = PRODUCT_PAGE_SIZE
   const paginatedArray = paginate(filteredProducts, pageSize, page)
   const handleChange = (event, value) => {
@@ -99,28 +88,32 @@ function ProductList ({ handleOpenUpdateProduct }) {
                     product.name,
                     product.price,
                     product.imageLink,
-                    product.category.name
+                    product.category ? product.category.name : 'N/A'
                   )
                 }}
               >
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{formatNumber(product.price)}</TableCell>
-                <TableCell>{product.category.name}</TableCell>
                 <TableCell>
-                  <img height={50} src={product.imageLink} alt='drink' />
+                  {product.category ? product.category.name : 'N/A'}
+                </TableCell>
+                <TableCell>
+                  <img height={50} src={product.imageLink} alt='a drink' />
                 </TableCell>
               </CustomizedTableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Stack spacing={2}>
-        <Pagination
-          count={Math.ceil(filteredProducts.length / pageSize)}
-          page={page}
-          onChange={handleChange}
-        />
-      </Stack>
+      {products.length !== 0 && (
+        <Stack my={2} spacing={2} alignItems='center'>
+          <Pagination
+            count={Math.ceil(filteredProducts.length / pageSize)}
+            page={page}
+            onChange={handleChange}
+          />
+        </Stack>
+      )}
     </>
   )
 }

@@ -7,7 +7,6 @@ import { createOrder } from '../features/order/orderSlice'
 import { getCategories } from '../features/category/categorySlice'
 import { formatNumber } from '../utils/formatNumber'
 import { paginate } from '../utils/paginate'
-
 import {
   Typography,
   Container,
@@ -24,6 +23,7 @@ import {
 import { styled } from '@mui/material/styles'
 import { DASHBOARD_PAGE_SIZE } from '../app/config'
 import SingleOrderTable from '../features/order/SingleOrderTable'
+import LoadingScreen from '../components/LoadingScreen'
 const CustomedGrid = styled(Grid)`
   :hover {
     cursor: pointer;
@@ -41,8 +41,9 @@ function HomePage () {
   const componentRef = useRef()
   const [orderId, setOrderId] = useState(null)
   const [isPrintButtonDisabled, setIsPrintButtonDisabled] = useState(true)
+  const [isClearButtonDisabled, setIsClearButtonDisabled] = useState(true)
   const [isCheckoutButtonDisabled, setIsCheckoutButtonDisabled] =
-    useState(false)
+    useState(true)
   const [printTime, setPrintTime] = useState('')
   const [page, setPage] = useState(1)
   const [totalPrice, setTotalPrice] = useState(0)
@@ -85,35 +86,39 @@ function HomePage () {
       [product._id]: (prevCart[product._id] || 0) + 1
     }))
     setTotalPrice((prevPrice) => prevPrice + product.price)
+    setIsCheckoutButtonDisabled(false)
+    setIsClearButtonDisabled(false)
   }
-  const handleEditQuantity = (productId) => {
-    const newQuantity = prompt('Enter new quantity:', cart[productId])
-    const parsedQuantity = parseInt(newQuantity)
-    if (!isNaN(parsedQuantity) && parsedQuantity > 0) {
-      setCart((prevCart) => ({
-        ...prevCart,
-        [productId]: parsedQuantity
-      }))
-      const product = products.find((product) => product._id === productId)
-      setTotalPrice(
-        (prevPrice) =>
-          prevPrice + (parsedQuantity - cart[productId]) * product.price
-      )
+  const handleEditQuantity = (productId, action) => {
+    const currentQuantity = cart[productId] || 0
+    let newQuantity
+    if (action === 'add') {
+      newQuantity = currentQuantity + 1
     } else {
-      alert('Invalid quantity. Please enter a valid number.')
+      newQuantity = Math.max(0, currentQuantity - 1)
+      if (newQuantity === 0) {
+        handleDeleteProduct(productId)
+        return
+      }
     }
+    setCart((prevCart) => ({
+      ...prevCart,
+      [productId]: newQuantity
+    }))
+
+    const product = products.find((product) => product._id === productId)
+    const priceChange = (newQuantity - currentQuantity) * product.price
+    setTotalPrice((prevPrice) => prevPrice + priceChange)
   }
   const handleDeleteProduct = (productId) => {
     const product = products.find((product) => product._id === productId)
     if (product) {
       const productPrice = product.price * cart[productId]
-
       setCart((prevCart) => {
         const newCart = { ...prevCart }
         delete newCart[productId]
         return newCart
       })
-
       setTotalPrice((prevPrice) => prevPrice - productPrice)
     }
   }
@@ -121,9 +126,10 @@ function HomePage () {
     setCart({})
     setTotalPrice(0)
     setPrintTime('')
-    setIsCheckoutButtonDisabled(false)
     setIsPrintButtonDisabled(true)
     setOrderId(null)
+    setIsCheckoutButtonDisabled(true)
+    setIsClearButtonDisabled(true)
   }
   const handleCheckout = async () => {
     if (totalPrice > 0) {
@@ -140,13 +146,11 @@ function HomePage () {
         })
       }
       try {
-        // Dispatch the action and get the entire order object
         const createdOrder = await dispatch(createOrder(orderData))
         console.log('createdOrder', createdOrder)
-        setOrderId(createdOrder.order._id) // Assuming _id is the order ID field
+        setOrderId(createdOrder.order._id)
       } catch (error) {
         alert(`Error creating order: ${error.message}`)
-        // Handle error as needed
       }
       setPrintTime(new Date().toLocaleString())
       setIsCheckoutButtonDisabled(true)
@@ -162,31 +166,32 @@ function HomePage () {
   if (!auth.user) {
     return <p>You are not logged in.</p>
   }
-  if (productIsLoading) {
+  if (productIsLoading || categoryIsLoading) {
     return (
-      <Typography mt={2} variant='caption' gutterBottom component='h1'>
-        Loading Products ...
-      </Typography>
-    )
-  }
-  if (categoryIsLoading) {
-    return (
-      <Typography mt={2} variant='caption' gutterBottom component='h1'>
-        Loading Categories ...
-      </Typography>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
+        }}
+      >
+        <LoadingScreen />
+      </Box>
     )
   }
   if (productError) {
+    console.log('productError', productError)
     return (
       <Typography>
-        Error occurred while fetching products: {productError}
+        Error occurred: {productError}
       </Typography>
     )
   }
   if (categoryError) {
     return (
       <Typography>
-        Error occurred while fetching categories: {categoryError}
+        Error occurred: {categoryError}
       </Typography>
     )
   }
@@ -235,7 +240,7 @@ function HomePage () {
                   onClick={() => addToCart(product)}
                 >
                   <Item>
-                    <img height={50} src={product.imageLink} alt='drink' />
+                    <img height={50} src={product.imageLink} alt='a drink' />
                   </Item>
                   <Typography
                     variant='body2'
@@ -256,7 +261,7 @@ function HomePage () {
                 </CustomedGrid>
               ))}
             </Grid>
-            <Stack spacing={2}>
+            <Stack my={2} spacing={2} alignItems='center'>
               <Pagination
                 count={Math.ceil(filteredProducts.length / pageSize)}
                 page={page}
@@ -274,7 +279,7 @@ function HomePage () {
               }}
             >
               <Button
-                disabled={isCheckoutButtonDisabled}
+                disabled={isCheckoutButtonDisabled || Object.keys(cart).length === 0}
                 variant='outlined'
                 onClick={handleCheckout}
               >
@@ -287,7 +292,7 @@ function HomePage () {
               >
                 Print
               </Button>
-              <Button variant='outlined' onClick={handleClean}>
+              <Button variant='outlined' onClick={handleClean} disabled={isClearButtonDisabled || Object.keys(cart).length === 0}>
                 Clear
               </Button>
             </Box>
