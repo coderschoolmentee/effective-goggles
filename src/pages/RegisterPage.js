@@ -65,10 +65,11 @@ function RegisterPage () {
 
   return password === '123'
     ? (
-      <Container maxWidth='xs' marginBottom={4}>
+      <Container maxWidth='xs' mb={4}>
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={3}>
             {!!errors.responseError && (
+
               <Alert severity='error'>{errors.responseError.message}</Alert>
             )}
             <Alert severity='info'>

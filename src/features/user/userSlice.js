@@ -32,27 +32,24 @@ const userSlice = createSlice({
     }
   }
 })
-
-export const updateUserProfile = ({ userId, avatarUrl }) => async dispatch => {
+export const updateUserProfile = ({ userId, oldPassword, newPassword, avatarUrl }) => async dispatch => {
   dispatch(userSlice.actions.startLoading())
   try {
     const data = {
-      avatarUrl
+      oldPassword, newPassword, avatarUrl
     }
     if (avatarUrl instanceof File) {
       const imageUrl = await cloudinaryUpload(avatarUrl)
       data.avatarUrl = imageUrl
     }
-
     const response = await apiService.put(`/users/${userId}`, data)
     dispatch(userSlice.actions.updateUserProfileSuccess(response.data))
     toast.success('Update Profile successfully')
   } catch (error) {
-    dispatch(userSlice.actions.hasError(error.message))
-    toast.error(error.message)
+    dispatch(userSlice.actions.hasError(error.error))
+    toast.error(error.error)
   }
 }
-
 export const getUser = id => async dispatch => {
   dispatch(userSlice.actions.startLoading())
   try {
@@ -60,7 +57,7 @@ export const getUser = id => async dispatch => {
     dispatch(userSlice.actions.getUserSuccess(response.data))
   } catch (error) {
     dispatch(userSlice.actions.hasError(error))
-    toast.error(error.message)
+    toast.error(error.error)
   }
 }
 export const getCurrentUserProfile = () => async dispatch => {
@@ -72,5 +69,4 @@ export const getCurrentUserProfile = () => async dispatch => {
     dispatch(userSlice.actions.hasError(error))
   }
 }
-
 export default userSlice.reducer

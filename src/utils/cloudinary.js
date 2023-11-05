@@ -4,17 +4,23 @@ import axios from 'axios'
 export const cloudinaryUpload = async (image) => {
   if (!image) return ''
 
-  const formData = new FormData()
-  formData.append('file', image)
-  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+  const isImageUrl = /^(http|https):\/\/[^ "]+$/.test(image)
 
-  const response = await axios({
-    url: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-    method: 'POST',
-    data: formData,
-    headers: { 'Content-Type': 'multipart/form-data' }
-  })
+  if (isImageUrl) {
+    return image
+  } else {
+    const formData = new FormData()
+    formData.append('file', image)
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET)
 
-  const imageUrl = response.data.secure_url
-  return imageUrl
+    const response = await axios({
+      url: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      method: 'POST',
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+
+    const imageUrl = response.data.secure_url
+    return imageUrl
+  }
 }

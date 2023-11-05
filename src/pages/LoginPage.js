@@ -59,7 +59,7 @@ function LoginPage () {
     <Container maxWidth='xs'>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3} sx={{ mb: 2 }}>
-          {!!errors.responseError && (
+          {errors.responseError && (
             <Alert severity='error'>{errors.responseError.error}</Alert>
           )}
           <FTextField name='email' label='Email address' />

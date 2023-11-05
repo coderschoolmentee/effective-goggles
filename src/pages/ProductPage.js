@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ProductCreate from '../features/product/ProductCreate'
 import { Container, Button } from '@mui/material'
 import ProductList from '../features/product/ProductList'
 import ProductUpdate from '../features/product/ProductUpdate'
+import { getCategories } from '../features/category/categorySlice'
+import { useDispatch, useSelector } from 'react-redux'
 function ProductPage () {
+  const { categories } = useSelector(state => state.category)
   const [isCreateProductOpen, setIsCreateProductOpen] = useState(false)
   const [isUpdateProductOpen, setIsUpdateProductOpen] = useState(false)
   const [selectedProductId, setSelectedProductId] = useState('')
@@ -11,6 +14,11 @@ function ProductPage () {
   const [selectedProductPrice, setSelectedProductPrice] = useState('')
   const [selectedProductImage, setSelectedProductImage] = useState('')
   const [selectedProductCategory, setSelectedProductCategory] = useState('')
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getCategories())
+  }, [dispatch])
   const handleOpenCreateProduct = () => {
     setIsCreateProductOpen(true)
   }
@@ -24,7 +32,6 @@ function ProductPage () {
     setSelectedProductImage(productImage)
     setSelectedProductCategory(productCategory)
     setIsUpdateProductOpen(true)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
   const handleCloseUpdateProduct = () => {
     setIsUpdateProductOpen(false)
@@ -35,10 +42,11 @@ function ProductPage () {
         Create a product
       </Button>
       {isCreateProductOpen && (
-        <ProductCreate handleOpen={handleOpenCreateProduct} handleClose={handleCloseCreateProduct} />
+        <ProductCreate categories={categories} handleOpen={handleOpenCreateProduct} handleClose={handleCloseCreateProduct} />
       )}
       {isUpdateProductOpen && (
         <ProductUpdate
+          handleOpen={handleOpenUpdateProduct}
           productName={selectedProductName}
           productId={selectedProductId}
           productPrice={selectedProductPrice}

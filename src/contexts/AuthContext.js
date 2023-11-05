@@ -10,7 +10,6 @@ const INITIALIZE = 'AUTH.INITIALIZE'
 const LOGIN_SUCCESS = 'AUTH.LOGIN_SUCCESS'
 const REGISTER_SUCCESS = 'AUTH.REGISTER_SUCCESS'
 const LOGOUT = 'AUTH.LOGOUT'
-
 const reducer = (state, action) => {
   let isAuthenticated, user
   switch (action.type) {
@@ -44,7 +43,6 @@ const reducer = (state, action) => {
       return state
   }
 }
-
 const setSession = accessToken => {
   if (accessToken) {
     window.localStorage.setItem('accessToken', accessToken)
@@ -54,12 +52,9 @@ const setSession = accessToken => {
     delete apiService.defaults.headers.common.Authorization
   }
 }
-
 const AuthContext = createContext({ ...initialState })
-
 function AuthProvider ({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState)
-
   useEffect(() => {
     const initialize = async () => {
       try {
@@ -90,7 +85,6 @@ function AuthProvider ({ children }) {
     }
     initialize()
   }, [])
-
   const login = async ({ email, password }, callback) => {
     const response = await apiService.post('/auth/login', { email, password })
     const { user, accessToken } = response.data
@@ -101,7 +95,6 @@ function AuthProvider ({ children }) {
     })
     callback()
   }
-
   const register = async ({ email, password, role }, callback) => {
     const response = await apiService.post('/users/register', {
       email,
@@ -121,7 +114,6 @@ function AuthProvider ({ children }) {
     dispatch({ type: LOGOUT })
     callback()
   }
-
   return (
     <AuthContext.Provider
       value={{

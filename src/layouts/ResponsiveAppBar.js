@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useState } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -24,14 +24,14 @@ const pages = [
 ]
 
 const settings = [
+  { name: 'Home', link: '/' },
   { name: 'Account', link: '/account' },
-  { name: 'Dashboard', link: '/' },
   { name: 'Logout' }
 ]
 
 function ResponsiveAppBar () {
-  const [anchorElNav, setAnchorElNav] = React.useState(null)
-  const [anchorElUser, setAnchorElUser] = React.useState(null)
+  const [anchorElNav, setAnchorElNav] = useState(null)
+  const [anchorElUser, setAnchorElUser] = useState(null)
 
   const { user, logout } = useAuth()
   const navigate = useNavigate()

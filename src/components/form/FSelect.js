@@ -11,7 +11,6 @@ function FSelect ({ name, children, ...other }) {
           {...field}
           select
           fullWidth
-          // SelectProps={{ native: true }}
           error={!!error}
           helperText={error?.message}
           {...other}

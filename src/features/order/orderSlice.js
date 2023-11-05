@@ -1,4 +1,3 @@
-// features/order/orderSlice.js
 import { createSlice } from '@reduxjs/toolkit'
 import apiService from '../../app/apiService'
 import { toast } from 'react-toastify'
@@ -55,7 +54,6 @@ export const createOrder = orderData => async dispatch => {
     const response = await apiService.post('/orders', orderData)
     dispatch(createOrderSuccess(response.data))
     toast.success('Order created successfully')
-    dispatch(getOrders())
     return response.data
   } catch (error) {
     dispatch(hasError(error.message))

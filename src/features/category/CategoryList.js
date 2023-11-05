@@ -9,10 +9,10 @@ import {
   TableBody,
   Stack,
   Pagination,
-  TextField
+  TextField,
+  styled
 } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCategories } from './categorySlice'
 import LoadingScreen from '../../components/LoadingScreen'
@@ -36,7 +36,6 @@ function CategoryList ({ handleOpenUpdateCategory }) {
     dispatch(getCategories())
   }, [dispatch])
 
-  // Filter products based on search term
   const filteredCategories = categories.filter((category) => {
     if (searchTerm) {
       return category.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -44,7 +43,6 @@ function CategoryList ({ handleOpenUpdateCategory }) {
     return true
   })
 
-  // Pagination
   const pageSize = CATEGORY_PAGE_SIZE
   const paginatedArray = paginate(filteredCategories, pageSize, page)
   const handleChange = (event, value) => {

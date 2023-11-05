@@ -34,15 +34,14 @@ function StatsPage () {
       orderDate.getFullYear() === selectedDate.getFullYear()
     )
   })
-  const startHour = 7 // Starting hour
-  const endHour = 23 // Ending hour
+  const startHour = 7
+  const endHour = 23
 
   const allHours = Array.from(
     { length: endHour - startHour + 1 },
     (_, index) => startHour + index
   )
 
-  // Prepare data for the chart
   const data = {}
   allHours.forEach((hour) => {
     const totalAmount = filteredOrders
@@ -56,7 +55,7 @@ function StatsPage () {
   }
   const chartData = allHours.map((hour) => ({
     name: formatHour(hour),
-    totalAmount: data[hour] || 0 // Default to 0 if no orders for that hour
+    totalAmount: data[hour] || 0
   }))
   const totalAmountForSelectedDate = filteredOrders.reduce(
     (total, order) => total + order.totalAmount,

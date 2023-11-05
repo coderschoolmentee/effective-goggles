@@ -25,9 +25,8 @@ function UploadSingleFile ({ error = false, file, helperText, sx, ...other }) {
     fileRejections
   } = useDropzone({
     multiple: false,
-    ...other, // You can pass any additional properties here
+    ...other,
     accept: {
-    // 'image/*': ['.png', 'jpg']
       'image/*': []
     }
   })
@@ -56,14 +55,7 @@ function UploadSingleFile ({ error = false, file, helperText, sx, ...other }) {
           sx={{ height: '100%' }}
         >
           <AddAPhotoRoundedIcon />
-          <Typography
-            gutterBottom
-            variant='body2'
-            sx={{ color: '#lack', zIndex: '2' }}
-            textAlign='center'
-          >
-            Drop or Select Image
-          </Typography>
+
         </Stack>
         {file && (
           <Box
@@ -89,6 +81,14 @@ function UploadSingleFile ({ error = false, file, helperText, sx, ...other }) {
         <RejectionFiles fileRejections={fileRejections} />
       )}
       {helperText && helperText}
+      <Typography
+        gutterBottom
+        variant='body2'
+        sx={{ color: '#lack', zIndex: '2' }}
+        textAlign='center'
+      >
+        Drop or Select Image
+      </Typography>
     </Box>
   )
 }

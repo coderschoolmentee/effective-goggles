@@ -13,6 +13,7 @@ import {
   Pagination
 } from '@mui/material'
 import { toast } from 'react-toastify'
+import { styled } from '@mui/material/styles'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getOrders } from './orderSlice'
@@ -26,16 +27,29 @@ import {
   YOUR_USER_ID
 } from '../../app/config'
 import { formatNumber } from '../../utils/formatNumber'
+const CustomizedTableRow = styled(TableRow)`
+  :hover {
+    cursor: pointer;
+  }
+`
 function OrderList () {
   const [page, setPage] = useState(1)
   const dispatch = useDispatch()
+  const [searchTerm, setSearchTerm] = useState('')
   const { isLoading, error, orders } = useSelector((state) => state.order)
   const [selectedOrderId, setSelectedOrderId] = useState(null)
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [email, setEmail] = useState('')
   const pageSize = ORDER_PAGE_SIZE
-  const paginatedArray = paginate(orders.slice().reverse(), pageSize, page)
-  console.log('orders', orders)
+
+  const filteredOrders = orders.filter((order) => {
+    if (searchTerm) {
+      return order._id.toLowerCase().includes(searchTerm.toLowerCase())
+    }
+    return true
+  })
+  const paginatedArray = paginate(filteredOrders.slice().reverse(), pageSize, page)
+
   const handleChange = (event, value) => {
     setPage(value)
   }
@@ -116,6 +130,17 @@ function OrderList () {
   }
   return (
     <>
+      <TextField
+        size='small'
+        sx={{ my: 1, mr: 1, display: 'block' }}
+        label='Search Orders by ID'
+        variant='outlined'
+        value={searchTerm}
+        onChange={(e) => {
+          setPage(1)
+          setSearchTerm(e.target.value)
+        }}
+      />
       <Typography mt={2} variant='h6' gutterBottom component='h1'>
         Order List
       </Typography>
@@ -123,21 +148,23 @@ function OrderList () {
         <Table aria-label='simple table'>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
+
               <TableCell>Total Amount</TableCell>
               <TableCell>Time</TableCell>
+              <TableCell>ID</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {paginatedArray.slice().map((order) => (
               <React.Fragment key={order._id}>
-                <TableRow onClick={() => handleRowClick(order._id)}>
-                  <TableCell>{order._id}</TableCell>
+                <CustomizedTableRow onClick={() => handleRowClick(order._id)}>
+
                   <TableCell>{order.totalAmount}</TableCell>
                   <TableCell>
                     {new Date(order.createdAt).toLocaleString()}
                   </TableCell>
-                </TableRow>
+                  <TableCell>{order._id}</TableCell>
+                </CustomizedTableRow>
                 {String(selectedOrderId) === String(order._id) && (
                   <TableRow>
                     <TableCell>
@@ -175,7 +202,6 @@ function OrderList () {
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') {
                                 handleEmailChange(e.target.value)
-                                // Additional logic to send the email
                                 sendReceipt(selectedOrder)
                               }
                             }}
@@ -201,7 +227,7 @@ function OrderList () {
         </Table>
       </TableContainer>
       {orders.length !== 0 && (
-        <Stack spacing={2}>
+        <Stack my={2} spacing={2} alignItems='center'>
           <Pagination
             count={Math.ceil(orders.length / pageSize)}
             page={page}

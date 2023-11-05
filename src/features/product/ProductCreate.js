@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   FormProvider,
@@ -9,8 +9,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
-import { createProduct, getProducts } from './productSlice'
-import { getCategories } from '../category/categorySlice'
+import { createProduct } from './productSlice'
 import { LoadingButton } from '@mui/lab'
 import { Button, Stack, Typography, MenuItem, Modal, Box } from '@mui/material'
 const yupSchema = Yup.object().shape({
@@ -34,9 +33,9 @@ const style = {
   borderRadius: 2,
   p: 4
 }
-function ProductCreate ({ handleOpen, handleClose }) {
+function ProductCreate ({ handleOpen, handleClose, categories }) {
   const { isLoading } = useSelector(state => state.product)
-  const { categories } = useSelector(state => state.category)
+  // const { categories } = useSelector(state => state.category)
   const dispatch = useDispatch()
   const methods = useForm({
     resolver: yupResolver(yupSchema),
@@ -54,11 +53,10 @@ function ProductCreate ({ handleOpen, handleClose }) {
     }
     dispatch(createProduct(data)).then(() => reset())
     handleClose()
-    getProducts()
   }
-  useEffect(() => {
-    dispatch(getCategories())
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(getCategories())
+  // }, [dispatch])
   const handleDrop = useCallback(
     acceptedFiles => {
       const file = acceptedFiles[0]

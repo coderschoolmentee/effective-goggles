@@ -4,7 +4,7 @@ import { FormProvider, FTextField } from '../../components/form'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
-import { updateCategory, getCategories } from './categorySlice'
+import { updateCategory } from './categorySlice'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Modal, Stack, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -15,7 +15,6 @@ const yupSchema = Yup.object().shape({
     .required('Category name is required'),
   description: Yup.string()
 })
-
 const style = {
   position: 'absolute',
   top: '50%',
@@ -28,21 +27,17 @@ const style = {
   borderRadius: 2,
   p: 4
 }
-
 function CategoryUpdate ({ handleOpen, handleClose, categoryId, categoryName, categoryDescription }) {
   const { isLoading } = useSelector(state => state.category)
   const dispatch = useDispatch()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-
   const openDeleteDialog = () => {
     setIsDeleteDialogOpen(true)
   }
-
   const closeDeleteDialog = () => {
     setIsDeleteDialogOpen(false)
     handleClose()
   }
-
   const methods = useForm({
     resolver: yupResolver(yupSchema),
     defaultValues: {
@@ -51,17 +46,19 @@ function CategoryUpdate ({ handleOpen, handleClose, categoryId, categoryName, ca
     }
   })
   const { handleSubmit, reset, setValue } = methods
-
   const onSubmit = async data => {
-    dispatch(updateCategory({ id: categoryId, ...data })).then(() => reset())
-    handleClose()
-    getCategories()
+    if (data.name !== categoryName || data.description !== categoryDescription) {
+      dispatch(updateCategory({ id: categoryId, ...data })).then(() => reset())
+      handleClose()
+    } else {
+      handleClose()
+    }
   }
+
   useEffect(() => {
     setValue('name', categoryName)
     setValue('description', categoryDescription)
   }, [categoryName, categoryDescription, setValue])
-
   return (
     <Modal
       open={handleOpen}
@@ -109,5 +106,4 @@ function CategoryUpdate ({ handleOpen, handleClose, categoryId, categoryName, ca
     </Modal>
   )
 }
-
 export default CategoryUpdate

@@ -6,6 +6,7 @@ import { getProducts } from '../features/product/productSlice'
 import { createOrder } from '../features/order/orderSlice'
 import { getCategories } from '../features/category/categorySlice'
 import { formatNumber } from '../utils/formatNumber'
+import { toast } from 'react-toastify'
 import { paginate } from '../utils/paginate'
 import {
   Typography,
@@ -42,8 +43,7 @@ function HomePage () {
   const [orderId, setOrderId] = useState(null)
   const [isPrintButtonDisabled, setIsPrintButtonDisabled] = useState(true)
   const [isClearButtonDisabled, setIsClearButtonDisabled] = useState(true)
-  const [isCheckoutButtonDisabled, setIsCheckoutButtonDisabled] =
-    useState(true)
+  const [isCheckoutButtonDisabled, setIsCheckoutButtonDisabled] = useState(true)
   const [printTime, setPrintTime] = useState('')
   const [page, setPage] = useState(1)
   const [totalPrice, setTotalPrice] = useState(0)
@@ -150,13 +150,13 @@ function HomePage () {
         console.log('createdOrder', createdOrder)
         setOrderId(createdOrder.order._id)
       } catch (error) {
-        alert(`Error creating order: ${error.message}`)
+        toast.error(`Error creating order: ${error.message}`)
       }
       setPrintTime(new Date().toLocaleString())
       setIsCheckoutButtonDisabled(true)
       setIsPrintButtonDisabled(false)
     } else {
-      alert('Total price is zero. Add items to the cart before checking out.')
+      toast.error('Total price is zero. Add items to the cart before checking out.')
     }
   }
   useEffect(() => {
@@ -181,19 +181,10 @@ function HomePage () {
     )
   }
   if (productError) {
-    console.log('productError', productError)
-    return (
-      <Typography>
-        Error occurred: {productError}
-      </Typography>
-    )
+    return <Typography>Error occurred: {productError}</Typography>
   }
   if (categoryError) {
-    return (
-      <Typography>
-        Error occurred: {categoryError}
-      </Typography>
-    )
+    return <Typography>Error occurred: {categoryError}</Typography>
   }
   return (
     <Container sx={{ mt: 2 }}>
@@ -261,13 +252,15 @@ function HomePage () {
                 </CustomedGrid>
               ))}
             </Grid>
-            <Stack my={2} spacing={2} alignItems='center'>
-              <Pagination
-                count={Math.ceil(filteredProducts.length / pageSize)}
-                page={page}
-                onChange={handleChange}
-              />
-            </Stack>
+            {filteredProducts.length !== 0 && (
+              <Stack my={2} spacing={2} alignItems='center'>
+                <Pagination
+                  count={Math.ceil(filteredProducts.length / pageSize)}
+                  page={page}
+                  onChange={handleChange}
+                />
+              </Stack>
+            )}
           </Grid>
           <Grid item xs={12} md={4}>
             <Box
@@ -279,7 +272,9 @@ function HomePage () {
               }}
             >
               <Button
-                disabled={isCheckoutButtonDisabled || Object.keys(cart).length === 0}
+                disabled={
+                  isCheckoutButtonDisabled || Object.keys(cart).length === 0
+                }
                 variant='outlined'
                 onClick={handleCheckout}
               >
@@ -292,7 +287,13 @@ function HomePage () {
               >
                 Print
               </Button>
-              <Button variant='outlined' onClick={handleClean} disabled={isClearButtonDisabled || Object.keys(cart).length === 0}>
+              <Button
+                variant='outlined'
+                onClick={handleClean}
+                disabled={
+                  isClearButtonDisabled || Object.keys(cart).length === 0
+                }
+              >
                 Clear
               </Button>
             </Box>
