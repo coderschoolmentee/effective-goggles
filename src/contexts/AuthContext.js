@@ -1,4 +1,5 @@
 import { createContext, useReducer, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import apiService from '../app/apiService'
 import { isValidToken } from '../utils/jwt'
 const initialState = {
@@ -14,7 +15,7 @@ const reducer = (state, action) => {
   let isAuthenticated, user
   switch (action.type) {
     case INITIALIZE:
-      ({ isAuthenticated, user } = action.payload)
+      ;({ isAuthenticated, user } = action.payload)
       return {
         ...state,
         isInitialized: true,
@@ -43,7 +44,7 @@ const reducer = (state, action) => {
       return state
   }
 }
-const setSession = accessToken => {
+const setSession = (accessToken) => {
   if (accessToken) {
     window.localStorage.setItem('accessToken', accessToken)
     apiService.defaults.headers.common.Authorization = `Bearer ${accessToken}`
@@ -54,6 +55,7 @@ const setSession = accessToken => {
 }
 const AuthContext = createContext({ ...initialState })
 function AuthProvider ({ children }) {
+  const updatedProfile = useSelector((state) => state.user.updatedProfile)
   const [state, dispatch] = useReducer(reducer, initialState)
   useEffect(() => {
     const initialize = async () => {
@@ -61,11 +63,11 @@ function AuthProvider ({ children }) {
         const accessToken = window.localStorage.getItem('accessToken')
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken)
-          const response = await apiService.get('/users/me')
-          const { user } = response.data
+          const updatedUser =
+            updatedProfile || (await apiService.get('/users/me')).data.user
           dispatch({
             type: INITIALIZE,
-            payload: { isAuthenticated: true, user }
+            payload: { isAuthenticated: true, user: updatedUser }
           })
         } else {
           setSession(null)
@@ -84,7 +86,7 @@ function AuthProvider ({ children }) {
       }
     }
     initialize()
-  }, [])
+  }, [updatedProfile])
   const login = async ({ email, password }, callback) => {
     const response = await apiService.post('/auth/login', { email, password })
     const { user, accessToken } = response.data
@@ -109,7 +111,7 @@ function AuthProvider ({ children }) {
     })
     callback()
   }
-  const logout = async callback => {
+  const logout = async (callback) => {
     setSession(null)
     dispatch({ type: LOGOUT })
     callback()

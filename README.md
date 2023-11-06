@@ -13,11 +13,10 @@ This is a simple point of sale (POS) app designed for a small coffee shop.
 - **Email Receipt**: Email a receipt to customer email.
 - **Statistics**: Display revenue bar graphs.
 
-
 ## Screenshots
 
 ![Dashboard](./public/images/dashboard.png)
-*Dashboard*
+_Dashboard_
 
 ## Stack
 
@@ -35,6 +34,7 @@ This is a simple point of sale (POS) app designed for a small coffee shop.
 ## Usage
 
 ### Staff
+
 1. Browse the product catalog and add items to the order.
 2. Adjust quantities and delete items in the order as needed.
 3. Click the "Sale" button to proceed with the checkout.

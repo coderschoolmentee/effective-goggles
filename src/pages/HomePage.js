@@ -147,7 +147,6 @@ function HomePage () {
       }
       try {
         const createdOrder = await dispatch(createOrder(orderData))
-        console.log('createdOrder', createdOrder)
         setOrderId(createdOrder.order._id)
       } catch (error) {
         toast.error(`Error creating order: ${error.message}`)
@@ -156,7 +155,9 @@ function HomePage () {
       setIsCheckoutButtonDisabled(true)
       setIsPrintButtonDisabled(false)
     } else {
-      toast.error('Total price is zero. Add items to the cart before checking out.')
+      toast.error(
+        'Total price is zero. Add items to the cart before checking out.'
+      )
     }
   }
   useEffect(() => {
@@ -167,18 +168,7 @@ function HomePage () {
     return <p>You are not logged in.</p>
   }
   if (productIsLoading || categoryIsLoading) {
-    return (
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)'
-        }}
-      >
-        <LoadingScreen />
-      </Box>
-    )
+    return <LoadingScreen />
   }
   if (productError) {
     return <Typography>Error occurred: {productError}</Typography>
@@ -193,7 +183,7 @@ function HomePage () {
           <Grid item xs={12} md={8}>
             <TextField
               size='small'
-              sx={{ mb: 1, mr: 1 }}
+              sx={{ mb: 2, mr: 1 }}
               label='Search Products'
               variant='outlined'
               value={searchTerm}

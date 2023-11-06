@@ -34,7 +34,9 @@ const SingleOrderTable = ({
             <TableCell>Name</TableCell>
             <TableCell>Quantity</TableCell>
             <TableCell>Price</TableCell>
-            {!isCheckoutButtonDisabled && hasProductsInCart && <TableCell>Remove</TableCell>}
+            {!isCheckoutButtonDisabled && hasProductsInCart && (
+              <TableCell>Remove</TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>

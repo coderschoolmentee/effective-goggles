@@ -31,7 +31,9 @@ function ThemeProvider ({ children }) {
       }
     },
     typography: {
-      fontFamily: ['Roboto Mono', 'monospace', 'Roboto', 'sans-serif'].join(',')
+      fontFamily: ['Roboto Mono', 'monospace', 'Roboto', 'sans-serif'].join(
+        ','
+      )
     }
   }
 

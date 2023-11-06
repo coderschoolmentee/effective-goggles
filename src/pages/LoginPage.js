@@ -41,7 +41,7 @@ function LoginPage () {
     formState: { errors, isSubmitting }
   } = methods
 
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     const from = location.state?.from?.pathname || '/'
     const { email, password } = data
     try {

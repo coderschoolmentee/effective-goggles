@@ -69,11 +69,10 @@ function RegisterPage () {
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={3}>
             {!!errors.responseError && (
-
               <Alert severity='error'>{errors.responseError.message}</Alert>
             )}
             <Alert severity='info'>
-              Already have an account?{' '}
+              Already have an account?
               <Link variant='subtitle2' component={RouterLink} to='/login'>
                 Sign in
               </Link>

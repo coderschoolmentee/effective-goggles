@@ -13,7 +13,7 @@ const DropZoneStyle = styled('div')(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   transition: theme.transitions.create('padding'),
   backgroundColor: '#F4F6F8',
-  border: '1px dashed alpha(\'#919EAB\', 0.32)',
+  border: "1px dashed alpha('#919EAB', 0.32)",
   '&:hover': { opacity: 0.72, cursor: 'pointer' }
 }))
 function UploadSingleFile ({ error = false, file, helperText, sx, ...other }) {
@@ -55,7 +55,6 @@ function UploadSingleFile ({ error = false, file, helperText, sx, ...other }) {
           sx={{ height: '100%' }}
         >
           <AddAPhotoRoundedIcon />
-
         </Stack>
         {file && (
           <Box

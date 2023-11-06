@@ -9,7 +9,8 @@ function CategoryPage () {
   const [isUpdateCategoryOpen, setIsUpdateCategoryOpen] = useState(false)
   const [selectedCategoryId, setSelectedCategoryId] = useState('')
   const [selectedCategoryName, setSelectedCategoryName] = useState('')
-  const [selectedCategoryDescription, setSelectedCategoryDescription] = useState('')
+  const [selectedCategoryDescription, setSelectedCategoryDescription] =
+    useState('')
 
   const handleOpenCreateCategory = () => {
     setIsCreateCategoryOpen(true)
@@ -19,7 +20,11 @@ function CategoryPage () {
     setIsCreateCategoryOpen(false)
   }
 
-  const handleOpenUpdateCategory = (categoryId, categoryName, categoryDescription) => {
+  const handleOpenUpdateCategory = (
+    categoryId,
+    categoryName,
+    categoryDescription
+  ) => {
     setSelectedCategoryId(categoryId)
     setSelectedCategoryName(categoryName)
     setSelectedCategoryDescription(categoryDescription)
@@ -32,11 +37,18 @@ function CategoryPage () {
 
   return (
     <Container sx={{ mt: 2 }}>
-      <Button sx={{ mb: 1 }} variant='contained' onClick={handleOpenCreateCategory}>
+      <Button
+        sx={{ mb: 1 }}
+        variant='contained'
+        onClick={handleOpenCreateCategory}
+      >
         Create a category
       </Button>
       {isCreateCategoryOpen && (
-        <CategoryCreate handleOpen={handleOpenCreateCategory} handleClose={handleCloseCreateCategory} />
+        <CategoryCreate
+          handleOpen={handleOpenCreateCategory}
+          handleClose={handleCloseCreateCategory}
+        />
       )}
       {isUpdateCategoryOpen && (
         <CategoryUpdate

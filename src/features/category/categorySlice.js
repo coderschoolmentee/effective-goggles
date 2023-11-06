@@ -41,7 +41,7 @@ export const categorySlice = createSlice({
 
 export const createCategory =
   ({ name, description }) =>
-    async dispatch => {
+    async (dispatch) => {
       dispatch(categorySlice.actions.startLoading())
       try {
         const response = await apiService.post('/categories', {
@@ -57,7 +57,7 @@ export const createCategory =
       }
     }
 
-export const getCategories = () => async dispatch => {
+export const getCategories = () => async (dispatch) => {
   dispatch(categorySlice.actions.startLoading())
   try {
     const response = await apiService.get('/categories')
@@ -68,23 +68,25 @@ export const getCategories = () => async dispatch => {
   }
 }
 
-export const updateCategory = ({ id, name, description }) => async dispatch => {
-  dispatch(categorySlice.actions.startLoading())
-  try {
-    const response = await apiService.put(`/categories/${id}`, {
-      name,
-      description
-    })
-    dispatch(categorySlice.actions.updateCategorySuccess(response.data))
-    toast.success('Updated category successfully')
-    dispatch(getCategories())
-  } catch (error) {
-    dispatch(categorySlice.actions.hasError(error.error))
-    toast.error(error.error)
-  }
-}
+export const updateCategory =
+  ({ id, name, description }) =>
+    async (dispatch) => {
+      dispatch(categorySlice.actions.startLoading())
+      try {
+        const response = await apiService.put(`/categories/${id}`, {
+          name,
+          description
+        })
+        dispatch(categorySlice.actions.updateCategorySuccess(response.data))
+        toast.success('Updated category successfully')
+        dispatch(getCategories())
+      } catch (error) {
+        dispatch(categorySlice.actions.hasError(error.error))
+        toast.error(error.error)
+      }
+    }
 
-export const deleteCategory = (id) => async dispatch => {
+export const deleteCategory = (id) => async (dispatch) => {
   dispatch(categorySlice.actions.startLoading())
   try {
     const response = await apiService.delete(`/categories/${id}`)

@@ -6,7 +6,7 @@ const apiService = axios.create({
 })
 
 apiService.interceptors.request.use(
-  request => {
+  (request) => {
     console.log('Start Request', request)
     return request
   },
@@ -17,13 +17,16 @@ apiService.interceptors.request.use(
 )
 
 apiService.interceptors.response.use(
-  response => {
+  (response) => {
     console.log('Response', response)
     return response
   },
   function (error) {
     console.log('RESPONSE ERROR', error)
-    const message = error.response?.data?.error || error.response?.data?.errors[0].msg || 'Unknown error'
+    const message =
+      error.response?.data?.error ||
+      error.response?.data?.errors[0].msg ||
+      'Unknown error'
     return Promise.reject({ error: message })
   }
 )

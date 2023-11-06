@@ -48,7 +48,7 @@ export const {
   deleteOrderSuccess
 } = orderSlice.actions
 
-export const createOrder = orderData => async dispatch => {
+export const createOrder = (orderData) => async (dispatch) => {
   dispatch(startLoading())
   try {
     const response = await apiService.post('/orders', orderData)
@@ -62,7 +62,7 @@ export const createOrder = orderData => async dispatch => {
   }
 }
 
-export const getOrders = () => async dispatch => {
+export const getOrders = () => async (dispatch) => {
   dispatch(startLoading())
   try {
     const response = await apiService.get('/orders')

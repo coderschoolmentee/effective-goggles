@@ -6,7 +6,7 @@ import ProductUpdate from '../features/product/ProductUpdate'
 import { getCategories } from '../features/category/categorySlice'
 import { useDispatch, useSelector } from 'react-redux'
 function ProductPage () {
-  const { categories } = useSelector(state => state.category)
+  const { categories } = useSelector((state) => state.category)
   const [isCreateProductOpen, setIsCreateProductOpen] = useState(false)
   const [isUpdateProductOpen, setIsUpdateProductOpen] = useState(false)
   const [selectedProductId, setSelectedProductId] = useState('')
@@ -25,7 +25,13 @@ function ProductPage () {
   const handleCloseCreateProduct = () => {
     setIsCreateProductOpen(false)
   }
-  const handleOpenUpdateProduct = (productId, productName, productPrice, productImage, productCategory) => {
+  const handleOpenUpdateProduct = (
+    productId,
+    productName,
+    productPrice,
+    productImage,
+    productCategory
+  ) => {
     setSelectedProductId(productId)
     setSelectedProductName(productName)
     setSelectedProductPrice(productPrice)
@@ -38,11 +44,19 @@ function ProductPage () {
   }
   return (
     <Container sx={{ mt: 2 }}>
-      <Button sx={{ mb: 1 }} variant='contained' onClick={handleOpenCreateProduct}>
+      <Button
+        sx={{ mb: 1 }}
+        variant='contained'
+        onClick={handleOpenCreateProduct}
+      >
         Create a product
       </Button>
       {isCreateProductOpen && (
-        <ProductCreate categories={categories} handleOpen={handleOpenCreateProduct} handleClose={handleCloseCreateProduct} />
+        <ProductCreate
+          categories={categories}
+          handleOpen={handleOpenCreateProduct}
+          handleClose={handleCloseCreateProduct}
+        />
       )}
       {isUpdateProductOpen && (
         <ProductUpdate

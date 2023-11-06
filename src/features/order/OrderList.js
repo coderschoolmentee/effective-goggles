@@ -48,7 +48,11 @@ function OrderList () {
     }
     return true
   })
-  const paginatedArray = paginate(filteredOrders.slice().reverse(), pageSize, page)
+  const paginatedArray = paginate(
+    filteredOrders.slice().reverse(),
+    pageSize,
+    page
+  )
 
   const handleChange = (event, value) => {
     setPage(value)
@@ -148,7 +152,6 @@ function OrderList () {
         <Table aria-label='simple table'>
           <TableHead>
             <TableRow>
-
               <TableCell>Total Amount</TableCell>
               <TableCell>Time</TableCell>
               <TableCell>ID</TableCell>
@@ -158,7 +161,6 @@ function OrderList () {
             {paginatedArray.slice().map((order) => (
               <React.Fragment key={order._id}>
                 <CustomizedTableRow onClick={() => handleRowClick(order._id)}>
-
                   <TableCell>{order.totalAmount}</TableCell>
                   <TableCell>
                     {new Date(order.createdAt).toLocaleString()}

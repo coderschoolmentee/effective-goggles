@@ -18,7 +18,8 @@ const yupSchema = Yup.object().shape({
     .required('Product name is required'),
   price: Yup.number()
     .min(10000, 'Product price must be at least 10,000')
-    .required('Product price is required').typeError('Enter number please'),
+    .required('Product price is required')
+    .typeError('Enter number please'),
   category: Yup.string().required('Category is required')
 })
 const style = {
@@ -34,7 +35,7 @@ const style = {
   p: 4
 }
 function ProductCreate ({ handleOpen, handleClose, categories }) {
-  const { isLoading } = useSelector(state => state.product)
+  const { isLoading } = useSelector((state) => state.product)
   // const { categories } = useSelector(state => state.category)
   const dispatch = useDispatch()
   const methods = useForm({
@@ -47,7 +48,7 @@ function ProductCreate ({ handleOpen, handleClose, categories }) {
     }
   })
   const { handleSubmit, setValue, reset } = methods
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     if (!data.imageLink) {
       data.imageLink = 'https://picsum.photos/200'
     }
@@ -58,7 +59,7 @@ function ProductCreate ({ handleOpen, handleClose, categories }) {
   //   dispatch(getCategories())
   // }, [dispatch])
   const handleDrop = useCallback(
-    acceptedFiles => {
+    (acceptedFiles) => {
       const file = acceptedFiles[0]
       if (file) {
         setValue(
@@ -98,7 +99,7 @@ function ProductCreate ({ handleOpen, handleClose, categories }) {
               placeholder='Price'
             />
             <FSelect sx={{ width: '30ch' }} label='Select' name='category'>
-              {categories.map(option => (
+              {categories.map((option) => (
                 <MenuItem key={option._id} value={option.name}>
                   {option.name}
                 </MenuItem>
@@ -112,7 +113,11 @@ function ProductCreate ({ handleOpen, handleClose, categories }) {
               onDrop={handleDrop}
             />
             <Stack direction='row' spacing={2}>
-              <LoadingButton type='submit' variant='contained' loading={isLoading}>
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                loading={isLoading}
+              >
                 Save
               </LoadingButton>
               <Button onClick={handleClose} variant='contained'>

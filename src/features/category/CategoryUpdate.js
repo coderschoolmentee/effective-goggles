@@ -27,8 +27,14 @@ const style = {
   borderRadius: 2,
   p: 4
 }
-function CategoryUpdate ({ handleOpen, handleClose, categoryId, categoryName, categoryDescription }) {
-  const { isLoading } = useSelector(state => state.category)
+function CategoryUpdate ({
+  handleOpen,
+  handleClose,
+  categoryId,
+  categoryName,
+  categoryDescription
+}) {
+  const { isLoading } = useSelector((state) => state.category)
   const dispatch = useDispatch()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const openDeleteDialog = () => {
@@ -46,8 +52,11 @@ function CategoryUpdate ({ handleOpen, handleClose, categoryId, categoryName, ca
     }
   })
   const { handleSubmit, reset, setValue } = methods
-  const onSubmit = async data => {
-    if (data.name !== categoryName || data.description !== categoryDescription) {
+  const onSubmit = async (data) => {
+    if (
+      data.name !== categoryName ||
+      data.description !== categoryDescription
+    ) {
       dispatch(updateCategory({ id: categoryId, ...data })).then(() => reset())
       handleClose()
     } else {
@@ -93,7 +102,11 @@ function CategoryUpdate ({ handleOpen, handleClose, categoryId, categoryName, ca
                 handleCloseDialog={closeDeleteDialog}
                 categoryId={categoryId}
               />
-              <LoadingButton type='submit' variant='contained' loading={isLoading}>
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                loading={isLoading}
+              >
                 Update
               </LoadingButton>
               <Button onClick={handleClose} variant='contained'>

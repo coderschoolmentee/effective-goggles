@@ -42,7 +42,7 @@ export const productSlice = createSlice({
 
 export const createProduct =
   ({ name, price, category, imageLink }) =>
-    async dispatch => {
+    async (dispatch) => {
       dispatch(productSlice.actions.startLoading())
       const imageUrl = await cloudinaryUpload(imageLink)
       try {
@@ -61,7 +61,7 @@ export const createProduct =
       }
     }
 
-export const getProducts = () => async dispatch => {
+export const getProducts = () => async (dispatch) => {
   dispatch(productSlice.actions.startLoading())
   try {
     const response = await apiService.get('/products')
@@ -72,26 +72,28 @@ export const getProducts = () => async dispatch => {
   }
 }
 
-export const updateProduct = ({ id, name, price, imageLink, category }) => async dispatch => {
-  dispatch(productSlice.actions.startLoading())
-  const imageUrl = await cloudinaryUpload(imageLink)
-  try {
-    const response = await apiService.put(`/products/${id}`, {
-      name,
-      price,
-      imageLink: imageUrl,
-      category
-    })
-    dispatch(productSlice.actions.updateProductSuccess(response.data))
-    toast.success('Updated product successfully')
-    dispatch(getProducts())
-  } catch (error) {
-    dispatch(productSlice.actions.hasError(error.error))
-    toast.error(error.error)
-  }
-}
+export const updateProduct =
+  ({ id, name, price, imageLink, category }) =>
+    async (dispatch) => {
+      dispatch(productSlice.actions.startLoading())
+      const imageUrl = await cloudinaryUpload(imageLink)
+      try {
+        const response = await apiService.put(`/products/${id}`, {
+          name,
+          price,
+          imageLink: imageUrl,
+          category
+        })
+        dispatch(productSlice.actions.updateProductSuccess(response.data))
+        toast.success('Updated product successfully')
+        dispatch(getProducts())
+      } catch (error) {
+        dispatch(productSlice.actions.hasError(error.error))
+        toast.error(error.error)
+      }
+    }
 
-export const deleteProduct = (id) => async dispatch => {
+export const deleteProduct = (id) => async (dispatch) => {
   dispatch(productSlice.actions.startLoading())
   try {
     const response = await apiService.delete(`/products/${id}`)

@@ -12,19 +12,22 @@ function StatsPage () {
   useEffect(() => {
     dispatch(getOrders())
   }, [dispatch])
-  const handleDateChange = (date) => {
-    setSelectedDate(date)
+  const handleDateChange = (event) => {
+    if (event.target.value === '') {
+      setSelectedDate(new Date())
+    } else {
+      setSelectedDate(new Date(event.target.value))
+    }
   }
+
   if (isLoading) {
-    return (
-      <Container sx={{ mt: 2 }}>
-        <LoadingScreen />
-      </Container>
-    )
+    return <LoadingScreen />
   } else if (error) {
-    <Typography mt={2} variant='h6' gutterBottom component='h1'>
-      Error Loading...
-    </Typography>
+    return (
+      <Typography mt={2} variant='h6' gutterBottom component='h1'>
+        Error Loading...
+      </Typography>
+    )
   }
   const filteredOrders = orders.filter((order) => {
     const orderDate = new Date(order.createdAt)
@@ -69,7 +72,7 @@ function StatsPage () {
           label='Select Date'
           type='date'
           defaultValue={selectedDate.toISOString().split('T')[0]}
-          onChange={(e) => handleDateChange(new Date(e.target.value))}
+          onChange={handleDateChange}
           InputLabelProps={{
             shrink: true
           }}

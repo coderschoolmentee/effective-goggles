@@ -1,11 +1,10 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import {
   Stack,
   Container,
   IconButton,
   InputAdornment,
   Alert
-
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import VisibilityIcon from '@mui/icons-material/Visibility'
@@ -31,6 +30,7 @@ const updatePasswordSchema = Yup.object().shape({
   )
 })
 function AccountPage () {
+  const updatedProfile = useSelector((state) => state.user.updatedProfile)
   const [tabValue, setTabValue] = useState('1')
   const handleChange = (event, newValue) => {
     setTabValue(newValue)
@@ -41,6 +41,7 @@ function AccountPage () {
   const [errorMessage, setErrorMessage] = useState('')
   const { user } = useAuth()
   const isLoading = useSelector((state) => state.user.isLoading)
+
   const defaultValues = {
     email: user?.email || '',
     avatarUrl: user?.avatarUrl || '',
@@ -74,20 +75,29 @@ function AccountPage () {
     },
     [setValue]
   )
+  useEffect(() => {
+    if (updatedProfile) {
+      setValue('avatarUrl', updatedProfile.avatarUrl || '')
+    }
+  }, [updatedProfile, setValue])
+
   const onSubmit = async (data) => {
     try {
       if (
-        (!data.oldPassword && data.newPassword) ||
-        (!data.newPassword && data.oldPassword)
+        (data.oldPassword && !data.newPassword) ||
+        (data.newPassword && !data.oldPassword)
       ) {
-        setErrorMessage('Confirm your old password and enter new password')
+        setErrorMessage('Please enter both old and new passwords')
         return
       }
+
       if (JSON.stringify(data) === JSON.stringify(defaultValues)) {
         return
       }
-      await dispatch(updateUserProfile({ userId: user._id, ...data }))
+
+      dispatch(updateUserProfile({ userId: user._id, ...data }))
       reset()
+      setErrorMessage('')
     } catch (error) {
       console.log('errr', error)
       setError('responseError', error)
@@ -109,7 +119,6 @@ function AccountPage () {
               </TabList>
             </Box>
             <TabPanel sx={{ pl: 0 }} value='1'>
-
               <FUploadImage
                 sx={{ width: '25ch' }}
                 name='avatarUrl'

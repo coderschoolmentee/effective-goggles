@@ -26,7 +26,7 @@ const style = {
   p: 4
 }
 function CategoryCreate ({ handleOpen, handleClose }) {
-  const { isLoading } = useSelector(state => state.category)
+  const { isLoading } = useSelector((state) => state.category)
   const dispatch = useDispatch()
   const methods = useForm({
     resolver: yupResolver(yupSchema),
@@ -36,7 +36,7 @@ function CategoryCreate ({ handleOpen, handleClose }) {
     }
   })
   const { handleSubmit, reset } = methods
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     dispatch(createCategory(data)).then(() => reset())
     handleClose()
     getCategories()
@@ -67,10 +67,16 @@ function CategoryCreate ({ handleOpen, handleClose }) {
               placeholder='Description'
             />
             <Stack direction='row' spacing={2}>
-              <LoadingButton type='submit' variant='contained' loading={isLoading}>
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                loading={isLoading}
+              >
                 Save
               </LoadingButton>
-              <Button onClick={handleClose} variant='contained'>Cancel</Button>
+              <Button onClick={handleClose} variant='contained'>
+                Cancel
+              </Button>
             </Stack>
           </Stack>
         </FormProvider>

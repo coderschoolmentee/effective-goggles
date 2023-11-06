@@ -47,10 +47,10 @@ function ResponsiveAppBar () {
     }
   }
 
-  const handleOpenNavMenu = event => {
+  const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
   }
-  const handleOpenUserMenu = event => {
+  const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget)
   }
 
@@ -68,7 +68,6 @@ function ResponsiveAppBar () {
     <AppBar position='static'>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
-
           <Typography
             variant='h6'
             noWrap
@@ -84,7 +83,9 @@ function ResponsiveAppBar () {
               textDecoration: 'none'
             }}
           >
-            <PointOfSaleIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            <PointOfSaleIcon
+              sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
+            />
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -116,9 +117,10 @@ function ResponsiveAppBar () {
                 display: { xs: 'block', md: 'none' }
               }}
             >
-              {pages.map(page =>
+              {pages.map((page) =>
                 !isAdmin &&
-                (page.name === 'Categories' || page.name === 'Stats' ||
+                (page.name === 'Categories' ||
+                  page.name === 'Stats' ||
                   page.name === 'Products')
                   ? null
                   : (
@@ -150,12 +152,16 @@ function ResponsiveAppBar () {
               textDecoration: 'none'
             }}
           >
-            <PointOfSaleIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+            <PointOfSaleIcon
+              sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
+            />
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map(page =>
+            {pages.map((page) =>
               !isAdmin &&
-              (page.name === 'Categories' || page.name === 'Stats' || page.name === 'Products' ||
+              (page.name === 'Categories' ||
+                page.name === 'Stats' ||
+                page.name === 'Products' ||
                 page.name === 'Customers')
                 ? null
                 : (
@@ -205,7 +211,7 @@ function ResponsiveAppBar () {
               </Box>
               <Divider sx={{ borderStyle: 'dashed' }} />
 
-              {settings.map(setting =>
+              {settings.map((setting) =>
                 setting.name === 'Logout'
                   ? (
                     <MenuItem key={setting.name} onClick={handleLogout}>

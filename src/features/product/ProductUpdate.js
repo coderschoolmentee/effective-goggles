@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FormProvider, FTextField, FUploadImage, FSelect } from '../../components/form'
+import {
+  FormProvider,
+  FTextField,
+  FUploadImage,
+  FSelect
+} from '../../components/form'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
@@ -11,7 +16,9 @@ import { getCategories } from '../category/categorySlice'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AlertDialog from './ProductDelete'
 const yupSchema = Yup.object().shape({
-  name: Yup.string().min(3, 'Category name must contain at least 3 characters').required('Product name is required')
+  name: Yup.string()
+    .min(3, 'Category name must contain at least 3 characters')
+    .required('Product name is required')
 })
 const style = {
   position: 'absolute',
@@ -35,7 +42,7 @@ function ProductUpdate ({
   productCategory
 }) {
   const { isLoading } = useSelector((state) => state.product)
-  const { categories } = useSelector(state => state.category)
+  const { categories } = useSelector((state) => state.category)
   const dispatch = useDispatch()
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const openDeleteDialog = () => {
@@ -90,7 +97,14 @@ function ProductUpdate ({
       if (isImageChanged) {
         dispatch(updateProduct({ ...formData })).then(() => reset())
       } else {
-        dispatch(updateProduct({ id: productId, name: data.name, price: data.price, category: data.category })).then(() => reset())
+        dispatch(
+          updateProduct({
+            id: productId,
+            name: data.name,
+            price: data.price,
+            category: data.category
+          })
+        ).then(() => reset())
       }
       handleClose()
     } else {
@@ -156,7 +170,11 @@ function ProductUpdate ({
                 handleCloseDialog={closeDeleteDialog}
                 productId={productId}
               />
-              <LoadingButton type='submit' variant='contained' loading={isLoading}>
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                loading={isLoading}
+              >
                 Update
               </LoadingButton>
               <Button onClick={handleClose} variant='contained'>

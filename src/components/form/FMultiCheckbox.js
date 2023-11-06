@@ -7,13 +7,13 @@ function FMultiCheckbox ({ name, options, ...other }) {
       name={name}
       control={control}
       render={({ field }) => {
-        const onSelected = option =>
+        const onSelected = (option) =>
           field.value.includes(option)
-            ? field.value.filter(value => value !== option)
+            ? field.value.filter((value) => value !== option)
             : [...field.value, option]
         return (
           <FormGroup>
-            {options.map(option => (
+            {options.map((option) => (
               <FormControlLabel
                 key={option}
                 control={
