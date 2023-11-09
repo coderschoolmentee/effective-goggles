@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import {
+  Link,
   Stack,
   Alert,
   IconButton,
@@ -9,7 +10,7 @@ import {
 import { LoadingButton } from '@mui/lab'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, Link as RouterLink } from 'react-router-dom'
 import { FormProvider, FTextField } from '../components/form'
 import useAuth from '../hooks/useAuth'
 import { useForm } from 'react-hook-form'
@@ -21,8 +22,7 @@ const LoginSchema = Yup.object().shape({
 })
 const defaultValues = {
   email: '',
-  password: '',
-  remember: true
+  password: ''
 }
 function LoginPage () {
   const navigate = useNavigate()
@@ -58,7 +58,7 @@ function LoginPage () {
   return (
     <Container maxWidth='xs'>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3} sx={{ mb: 2 }}>
+        <Stack spacing={2} sx={{ mb: 3 }}>
           {errors.responseError && (
             <Alert severity='error'>{errors.responseError.error}</Alert>
           )}
@@ -81,6 +81,7 @@ function LoginPage () {
             }}
           />
         </Stack>
+
         <LoadingButton
           fullWidth
           size='large'
@@ -90,6 +91,21 @@ function LoginPage () {
         >
           Login
         </LoadingButton>
+        <Stack
+          direction='row'
+          gap={2}
+          alignItems='center'
+          justifyContent='center'
+          sx={{ my: 2 }}
+        >
+          <Link variant='subtitle2' component={RouterLink} to='/register'>
+            Register
+          </Link>
+
+          <Link component={RouterLink} variant='subtitle2' to='/reset'>
+            Reset password
+          </Link>
+        </Stack>
       </FormProvider>
     </Container>
   )

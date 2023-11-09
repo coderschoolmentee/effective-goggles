@@ -215,9 +215,9 @@ function HomePage () {
                 <CustomedGrid
                   key={product._id}
                   item
-                  xs={4}
-                  sm={3}
-                  md={2}
+                  xs={6}
+                  sm={4}
+                  md={3}
                   onClick={() => addToCart(product)}
                 >
                   <Item>

@@ -5,7 +5,8 @@ import { cloudinaryUpload } from '../../utils/cloudinary'
 const initialState = {
   isLoading: false,
   error: null,
-  updatedProfile: null
+  updatedProfile: null,
+  tokenData: null
 }
 const userSlice = createSlice({
   name: 'user',
@@ -17,12 +18,23 @@ const userSlice = createSlice({
     hasError (state, action) {
       state.isLoading = false
       state.error = action.payload
+      state.tokenData = null
     },
     updateUserProfileSuccess (state, action) {
       state.isLoading = false
       state.error = null
       const updatedUser = action.payload.user
       state.updatedProfile = updatedUser
+    },
+    sendResetTokenSuccess (state, action) {
+      state.isLoading = false
+      state.error = null
+      state.tokenData = action.payload
+    },
+    resetPasswordSuccess (state, action) {
+      state.isLoading = false
+      state.error = null
+      state.resetPasswordData = action.payload
     }
   }
 })
@@ -45,10 +57,44 @@ export const updateUserProfile =
         dispatch(getCurrentUserProfile())
         toast.success('Update Profile successfully')
       } catch (error) {
+        console.log('error reset', error)
         dispatch(userSlice.actions.hasError(error.error))
         toast.error(error.error)
       }
     }
+export const sendPassWordResetToken = (email) => async (dispatch) => {
+  dispatch(userSlice.actions.startLoading())
+  try {
+    const response = await apiService.post('/users/send-password-reset-token', {
+      email
+    })
+    dispatch(userSlice.actions.sendResetTokenSuccess(response.data))
+    toast.success('Token sent to email successfully')
+  } catch (error) {
+    console.log('error at sendPassWordResetToken', error)
+    dispatch(userSlice.actions.hasError(error.error))
+    toast.error(error.error)
+  }
+}
+
+export const resetPassword =
+  (email, token, newPassword) => async (dispatch) => {
+    dispatch(userSlice.actions.startLoading())
+    try {
+      const response = await apiService.post('/users/reset-password', {
+        email,
+        token,
+        newPassword
+      })
+      console.log('response at resetPassword', response)
+      dispatch(userSlice.actions.resetPasswordSuccess(response.data))
+      toast.success('Pasword reset successfully')
+    } catch (error) {
+      console.log('error at sendPassWordResetToken', error)
+      dispatch(userSlice.actions.hasError(error.error))
+      toast.error(error.error)
+    }
+  }
 
 export const getCurrentUserProfile = () => async (dispatch) => {
   dispatch(userSlice.actions.startLoading())

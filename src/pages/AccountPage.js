@@ -99,7 +99,7 @@ function AccountPage () {
       reset()
       setErrorMessage('')
     } catch (error) {
-      console.log('errr', error)
+      console.log('error', error)
       setError('responseError', error)
     }
   }

@@ -14,6 +14,7 @@ import { Counter } from '../features/counter/counter'
 import CategoryPage from '../pages/CategoryPage'
 import OrderPage from '../pages/OrderPage'
 import StatsPage from '../pages/StatsPage'
+import ResetPwdPage from '../pages/ResetPwdPage'
 
 function Router () {
   return (
@@ -40,6 +41,7 @@ function Router () {
       <Route element={<BlankLayout />}>
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<RegisterPage />} />
+        <Route path='/reset' element={<ResetPwdPage />} />
       </Route>
       <Route path='*' element={<NotFoundPage />} />
     </Routes>
