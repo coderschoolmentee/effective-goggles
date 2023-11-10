@@ -13,7 +13,7 @@ import {
 import { LoadingButton } from '@mui/lab'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import { useNavigate, Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 import { FormProvider, FSelect, FTextField } from '../components/form'
 import { useForm } from 'react-hook-form'
@@ -28,15 +28,14 @@ const RegisterSchema = Yup.object().shape({
     .oneOf([Yup.ref('password')], 'Passwords must match')
 })
 const defaultValues = {
-  role: '',
+  role: 'staff',
   email: '',
   password: '',
   passwordConfirmation: ''
 }
-
 function RegisterPage () {
   const [password, setPassword] = useState('')
-  const navigate = useNavigate()
+  const [isVerificationSent, setIsVerificationSent] = useState(false)
   const auth = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
@@ -55,89 +54,113 @@ function RegisterPage () {
     const { email, password, role } = data
     try {
       await auth.register({ email, password, role }, () => {
-        navigate('/', { replace: true })
+        setIsVerificationSent(true)
+        reset()
+        // navigate('/', { replace: true })
       })
     } catch (error) {
       reset()
       setError('responseError', error)
     }
   }
-
   return password === '123'
     ? (
       <Container maxWidth='xs' mb={4}>
-        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={3}>
-            {!!errors.responseError && (
-              <Alert severity='error'>{errors.responseError.message}</Alert>
-            )}
+        {!isVerificationSent && (
+          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing={3}>
+              {!!errors.responseError && (
+                <Alert severity='error'>{errors.responseError.error}</Alert>
+              )}
+              <FTextField name='email' label='Email address' />
+              <FTextField
+                name='password'
+                label='Password'
+                type={showPassword ? 'text' : 'password'}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge='end'
+                      >
+                        {showPassword
+                          ? (
+                            <VisibilityIcon />
+                            )
+                          : (
+                            <VisibilityOffIcon />
+                            )}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <FTextField
+                name='passwordConfirmation'
+                label='Password Confirmation'
+                type={showPasswordConfirmation ? 'text' : 'password'}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton
+                        onClick={() =>
+                          setShowPasswordConfirmation(!showPasswordConfirmation)}
+                        edge='end'
+                      >
+                        {showPasswordConfirmation
+                          ? (
+                            <VisibilityIcon />
+                            )
+                          : (
+                            <VisibilityOffIcon />
+                            )}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <FSelect name='role' label='Role'>
+                {['admin', 'staff'].map((role) => (
+                  <MenuItem key={role} value={role}>
+                    {role}
+                  </MenuItem>
+                ))}
+              </FSelect>
+              <LoadingButton
+                fullWidth
+                size='large'
+                type='submit'
+                variant='contained'
+                loading={isSubmitting}
+              >
+                Register
+              </LoadingButton>
+            </Stack>
             <Alert severity='info'>
-              Already have an account?
+              Already have an account?{' '}
               <Link variant='subtitle2' component={RouterLink} to='/login'>
                 Sign in
               </Link>
             </Alert>
-            <FTextField name='email' label='Email address' />
-            <FTextField
-              name='password'
-              label='Password'
-              type={showPassword ? 'text' : 'password'}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge='end'
-                    >
-                      {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-            />
-            <FTextField
-              name='passwordConfirmation'
-              label='Password Confirmation'
-              type={showPasswordConfirmation ? 'text' : 'password'}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <IconButton
-                      onClick={() =>
-                        setShowPasswordConfirmation(!showPasswordConfirmation)}
-                      edge='end'
-                    >
-                      {showPasswordConfirmation
-                        ? (
-                          <VisibilityIcon />
-                          )
-                        : (
-                          <VisibilityOffIcon />
-                          )}
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-            />
-            <FSelect name='role' label='Role'>
-              {['admin', 'staff'].map((role) => (
-                <MenuItem key={role} value={role}>
-                  {role}
-                </MenuItem>
-              ))}
-            </FSelect>
+          </FormProvider>
+        )}
 
-            <LoadingButton
-              fullWidth
-              size='large'
-              type='submit'
-              variant='contained'
-              loading={isSubmitting}
+        {isVerificationSent && (
+          <>
+            <Typography variant='body2' color='textSecondary'>
+              Check your email for verification.
+            </Typography>
+            <Link
+              variant='subtitle2'
+              align='center'
+              component={RouterLink}
+              to='/login'
             >
-              Register
-            </LoadingButton>
-          </Stack>
-        </FormProvider>
+              Sign in
+            </Link>
+          </>
+        )}
       </Container>
       )
     : (
@@ -145,14 +168,12 @@ function RegisterPage () {
         <Typography variant='h6' component='h1' gutterBottom>
           Enter password
         </Typography>
-
         <Input
           type='password'
           placeholder='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
         <Link variant='subtitle2' component={RouterLink} to='/'>
           Go back to home
         </Link>

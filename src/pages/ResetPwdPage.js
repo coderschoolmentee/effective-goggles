@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import { useNavigate, Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import * as Yup from 'yup'
 import {
   sendPassWordResetToken,
@@ -30,7 +30,6 @@ const defaultValues = {
   newPasswordConfirmation: ''
 }
 function ResetPwdPage () {
-  const navigate = useNavigate()
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showNewPasswordConfirm, setShowNewPasswordConfirm] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -72,7 +71,6 @@ function ResetPwdPage () {
         return
       }
       reset()
-      // navigate('/login')
     } catch (error) {
       console.log('error', error)
       reset()

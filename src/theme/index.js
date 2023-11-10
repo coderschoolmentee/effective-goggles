@@ -11,11 +11,16 @@ const SECONDARY = {
   main: '#43A047'
 }
 
+const ERROR = {
+  main: '#e9514e'
+}
+
 function ThemeProvider ({ children }) {
   const themeOptions = {
     palette: {
       primary: PRIMARY,
-      secondary: SECONDARY
+      secondary: SECONDARY,
+      error: ERROR
     },
     shape: { borderRadius: 8 },
     components: {

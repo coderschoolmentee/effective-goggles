@@ -15,6 +15,7 @@ import CategoryPage from '../pages/CategoryPage'
 import OrderPage from '../pages/OrderPage'
 import StatsPage from '../pages/StatsPage'
 import ResetPwdPage from '../pages/ResetPwdPage'
+import VerifyEmailPage from '../pages/VerifyEmailPage'
 
 function Router () {
   return (
@@ -43,6 +44,7 @@ function Router () {
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/reset' element={<ResetPwdPage />} />
       </Route>
+      <Route path='/verify/:token' element={<VerifyEmailPage />} />
       <Route path='*' element={<NotFoundPage />} />
     </Routes>
   )
