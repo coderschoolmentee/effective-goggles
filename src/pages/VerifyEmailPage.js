@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link as RouterLink } from 'react-router-dom'
 import apiService from '../app/apiService'
 import { Typography, Link, Stack } from '@mui/material'
-import LoadingScreen from '../components/LoadingScreen'
 const VerifyEmailPage = () => {
   const { token } = useParams()
   const [verificationStatus, setVerificationStatus] = useState(null)
@@ -22,7 +21,7 @@ const VerifyEmailPage = () => {
 
   return (
     <>
-      {verificationStatus !== 'success' && (
+      {verificationStatus === 'success' && (
         <Stack spacing={3} minHeight='100vh' justifyContent='center' alignItems='center'>
           <Typography variant='body1' color='textPrimary'>
             Email verified successfully!
@@ -40,10 +39,10 @@ const VerifyEmailPage = () => {
         </Stack>
       )}
       {verificationStatus === null && (
-        // <Typography variant="body1" color="textSecondary">
-        //   Verifying email...
-        // </Typography>
-        <LoadingScreen />
+        <Typography variant='body1' color='textSecondary'>
+          Verifying email...
+        </Typography>
+        // <LoadingScreen />
       )}
     </>
   )

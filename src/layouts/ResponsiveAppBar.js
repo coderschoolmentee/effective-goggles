@@ -202,6 +202,13 @@ function ResponsiveAppBar () {
             >
               <Box sx={{ my: 1.5, px: 2.5 }}>
                 <Typography
+                  variant='body1'
+                  sx={{ color: 'text.secondary' }}
+                  noWrap
+                >
+                  {user?.name}
+                </Typography>
+                <Typography
                   variant='body2'
                   sx={{ color: 'text.secondary' }}
                   noWrap

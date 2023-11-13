@@ -21,6 +21,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 const RegisterSchema = Yup.object().shape({
   role: Yup.string().required('Role is required'),
+  name: Yup.string().required('Name is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
   password: Yup.string().required('Password is required'),
   passwordConfirmation: Yup.string()
@@ -28,6 +29,7 @@ const RegisterSchema = Yup.object().shape({
     .oneOf([Yup.ref('password')], 'Passwords must match')
 })
 const defaultValues = {
+  name: '',
   role: 'staff',
   email: '',
   password: '',
@@ -51,12 +53,11 @@ function RegisterPage () {
     formState: { errors, isSubmitting }
   } = methods
   const onSubmit = async (data) => {
-    const { email, password, role } = data
+    const { name, email, password, role } = data
     try {
-      await auth.register({ email, password, role }, () => {
+      await auth.register({ name, email, password, role }, () => {
         setIsVerificationSent(true)
         reset()
-        // navigate('/', { replace: true })
       })
     } catch (error) {
       reset()
@@ -72,6 +73,7 @@ function RegisterPage () {
               {!!errors.responseError && (
                 <Alert severity='error'>{errors.responseError.error}</Alert>
               )}
+              <FTextField name='name' label='Name' />
               <FTextField name='email' label='Email address' />
               <FTextField
                 name='password'

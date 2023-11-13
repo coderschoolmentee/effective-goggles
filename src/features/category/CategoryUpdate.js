@@ -82,18 +82,18 @@ function CategoryUpdate ({
           </Typography>
           <Stack spacing={3}>
             <FTextField
-              sx={{ width: '30ch' }}
+              sx={{ width: '100%' }}
               name='name'
               label='Category Name'
               placeholder='New name'
             />
             <FTextField
-              sx={{ width: '30ch' }}
+              sx={{ width: '100%' }}
               name='description'
               label='Category Description'
               placeholder='New description'
             />
-            <Stack direction='row' spacing={2} alignItems='center'>
+            <Stack direction='row' justifyContent='flex-end' spacing={2} alignItems='center'>
               <Button onClick={openDeleteDialog}>
                 <DeleteIcon color='warning' />
               </Button>

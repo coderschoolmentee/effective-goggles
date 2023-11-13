@@ -9,9 +9,20 @@ function StatsPage () {
   const { isLoading, error, orders } = useSelector((state) => state.order)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const dispatch = useDispatch()
+  console.log('selectedDate', selectedDate)
+
   useEffect(() => {
-    dispatch(getOrders())
-  }, [dispatch])
+    const formattedDate = new Date(
+      selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000
+    )
+      .toISOString()
+      .split('T')[0]
+
+    console.log('formattedDate', formattedDate)
+
+    dispatch(getOrders(1, 50, '', formattedDate))
+  }, [dispatch, selectedDate])
+
   const handleDateChange = (event) => {
     if (event.target.value === '') {
       setSelectedDate(new Date())
@@ -37,7 +48,7 @@ function StatsPage () {
       orderDate.getFullYear() === selectedDate.getFullYear()
     )
   })
-  const startHour = 7
+  const startHour = 1
   const endHour = 23
 
   const allHours = Array.from(
@@ -71,7 +82,11 @@ function StatsPage () {
           id='date'
           label='Select Date'
           type='date'
-          defaultValue={selectedDate.toISOString().split('T')[0]}
+          defaultValue={new Date(
+            selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000
+          )
+            .toISOString()
+            .split('T')[0]}
           onChange={handleDateChange}
           InputLabelProps={{
             shrink: true

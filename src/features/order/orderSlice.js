@@ -1,13 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import apiService from '../../app/apiService'
 import { toast } from 'react-toastify'
-
 const initialState = {
   isLoading: false,
   error: null,
-  orders: []
+  orders: [],
+  currentPage: 1,
+  totalPages: 1,
+  totalOrders: 0
 }
-
 export const orderSlice = createSlice({
   name: 'order',
   initialState,
@@ -26,7 +27,10 @@ export const orderSlice = createSlice({
     getOrdersSuccess (state, action) {
       state.isLoading = false
       state.error = null
-      state.orders = action.payload
+      state.orders = action.payload.orders
+      state.currentPage = action.payload.currentPage
+      state.totalPages = action.payload.totalPages
+      state.totalOrders = action.payload.totalOrders
     },
     updateOrderSuccess (state, action) {
       state.isLoading = false
@@ -38,7 +42,6 @@ export const orderSlice = createSlice({
     }
   }
 })
-
 export const {
   startLoading,
   hasError,
@@ -47,7 +50,6 @@ export const {
   updateOrderSuccess,
   deleteOrderSuccess
 } = orderSlice.actions
-
 export const createOrder = (orderData) => async (dispatch) => {
   dispatch(startLoading())
   try {
@@ -61,11 +63,15 @@ export const createOrder = (orderData) => async (dispatch) => {
     throw error
   }
 }
-
-export const getOrders = () => async (dispatch) => {
+export const getOrders = (page = 1, limit = 10, searchTerm = '', date = '') => async (dispatch) => {
   dispatch(startLoading())
   try {
-    const response = await apiService.get('/orders')
+    let url = `/orders?page=${page}&limit=${limit}`
+    if (searchTerm) url += `&search=${searchTerm}`
+    if (date) url += `&date=${date}`
+
+    const response = await apiService.get(url)
+    console.log('response', response)
     dispatch(getOrdersSuccess(response.data))
   } catch (error) {
     dispatch(hasError(error.message))

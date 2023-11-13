@@ -55,18 +55,18 @@ function CategoryCreate ({ handleOpen, handleClose }) {
           </Typography>
           <Stack spacing={3}>
             <FTextField
-              sx={{ width: '30ch' }}
+              sx={{ width: '100%' }}
               name='name'
               label='Category Name'
               placeholder='Name'
             />
             <FTextField
-              sx={{ width: '30ch' }}
+              sx={{ width: '100%' }}
               name='description'
               label='Description'
               placeholder='Description'
             />
-            <Stack direction='row' spacing={2}>
+            <Stack justifyContent='flex-end' direction='row' spacing={2}>
               <LoadingButton
                 type='submit'
                 variant='contained'

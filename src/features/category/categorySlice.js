@@ -1,11 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import apiService from '../../app/apiService'
 import { toast } from 'react-toastify'
+import { CATEGORY_PAGE_SIZE } from '../../app/config'
 
 const initialState = {
   isLoading: false,
   error: null,
-  categories: []
+  categories: [],
+  totalPages: 0,
+  totalCategories: 0
 }
 
 export const categorySlice = createSlice({
@@ -26,7 +29,9 @@ export const categorySlice = createSlice({
     getCategorySuccess (state, action) {
       state.isLoading = false
       state.error = null
-      state.categories = action.payload
+      state.categories = action.payload.categories
+      state.totalPages = action.payload.totalPages
+      state.totalCategories = action.payload.totalCategories
     },
     updateCategorySuccess (state, action) {
       state.isLoading = false
@@ -50,17 +55,30 @@ export const createCategory =
         })
         dispatch(categorySlice.actions.createCategorySuccess(response.data))
         toast.success('Created category successfully')
-        dispatch(getCategories())
+        dispatch(getCategories(1, CATEGORY_PAGE_SIZE))
       } catch (error) {
         dispatch(categorySlice.actions.hasError(error.error))
         toast.error(error.error)
       }
     }
 
-export const getCategories = () => async (dispatch) => {
+export const getCategories = (page, limit = CATEGORY_PAGE_SIZE, search) => async (dispatch) => {
   dispatch(categorySlice.actions.startLoading())
   try {
-    const response = await apiService.get('/categories')
+    let url = `/categories?page=${page}&limit=${limit}`
+    if (search) url += `&search=${search}`
+
+    const response = await apiService.get(url)
+    dispatch(categorySlice.actions.getCategorySuccess(response.data))
+  } catch (error) {
+    dispatch(categorySlice.actions.hasError(error.error))
+    toast.error(error.error)
+  }
+}
+export const getAllCategories = () => async (dispatch) => {
+  dispatch(categorySlice.actions.startLoading())
+  try {
+    const response = await apiService.get('/categories/all')
     dispatch(categorySlice.actions.getCategorySuccess(response.data))
   } catch (error) {
     dispatch(categorySlice.actions.hasError(error.error))

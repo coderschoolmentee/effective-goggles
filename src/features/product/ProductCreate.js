@@ -36,7 +36,6 @@ const style = {
 }
 function ProductCreate ({ handleOpen, handleClose, categories }) {
   const { isLoading } = useSelector((state) => state.product)
-  // const { categories } = useSelector(state => state.category)
   const dispatch = useDispatch()
   const methods = useForm({
     resolver: yupResolver(yupSchema),
@@ -50,14 +49,12 @@ function ProductCreate ({ handleOpen, handleClose, categories }) {
   const { handleSubmit, setValue, reset } = methods
   const onSubmit = async (data) => {
     if (!data.imageLink) {
-      data.imageLink = 'https://picsum.photos/200'
+      data.imageLink = 'https://source.unsplash.com/1600x900?coffee,cup,drink'
     }
     dispatch(createProduct(data)).then(() => reset())
     handleClose()
   }
-  // useEffect(() => {
-  //   dispatch(getCategories())
-  // }, [dispatch])
+
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0]
@@ -86,19 +83,19 @@ function ProductCreate ({ handleOpen, handleClose, categories }) {
           </Typography>
           <Stack spacing={3}>
             <FTextField
-              sx={{ width: '30ch' }}
+              sx={{ width: '100%' }}
               name='name'
               label='Product Name'
               placeholder='Name'
             />
             <FTextField
-              sx={{ width: '30ch' }}
+              sx={{ width: '100%' }}
               type='number'
               name='price'
               label='Price'
               placeholder='Price'
             />
-            <FSelect sx={{ width: '30ch' }} label='Select' name='category'>
+            <FSelect sx={{ width: '100%' }} label='Select' name='category'>
               {categories.map((option) => (
                 <MenuItem key={option._id} value={option.name}>
                   {option.name}
@@ -106,13 +103,13 @@ function ProductCreate ({ handleOpen, handleClose, categories }) {
               ))}
             </FSelect>
             <FUploadImage
-              sx={{ width: '20ch' }}
+              sx={{ width: '100%' }}
               name='imageLink'
               accept='image/*'
               maxSize={3145728}
               onDrop={handleDrop}
             />
-            <Stack direction='row' spacing={2}>
+            <Stack direction='row' justifyContent='flex-end' spacing={2}>
               <LoadingButton
                 type='submit'
                 variant='contained'

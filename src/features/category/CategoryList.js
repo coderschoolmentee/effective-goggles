@@ -12,12 +12,12 @@ import {
   TextField,
   styled
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCategories } from './categorySlice'
 import LoadingScreen from '../../components/LoadingScreen'
-import { CATEGORY_PAGE_SIZE } from '../../app/config'
-import { paginate } from '../../utils/paginate'
+import { CATEGORY_PAGE_SIZE, DEBOUNCE_DELAY } from '../../app/config'
+import { debounce } from 'lodash'
 const CustomizedTableRow = styled(TableRow)`
   :hover {
     cursor: pointer;
@@ -26,34 +26,36 @@ const CustomizedTableRow = styled(TableRow)`
 
 function CategoryList ({ handleOpenUpdateCategory }) {
   const dispatch = useDispatch()
-  const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(1)
-  const { isLoading, error, categories } = useSelector(
+  const [searchInput, setSearchInput] = useState('')
+  const { isLoading, error, categories, totalCategories } = useSelector(
     (state) => state.category
+  )
+  // eslint-disable-next-line
+  const debouncedHandleSearch = useCallback(
+    debounce((value) => {
+      setPage(1)
+      dispatch(getCategories(1, CATEGORY_PAGE_SIZE, value))
+    }, DEBOUNCE_DELAY),
+    [dispatch]
   )
 
   useEffect(() => {
-    dispatch(getCategories())
-  }, [dispatch])
+    debouncedHandleSearch(searchInput)
+  }, [searchInput, debouncedHandleSearch])
 
-  const filteredCategories = categories.filter((category) => {
-    if (searchTerm) {
-      return category.name.toLowerCase().includes(searchTerm.toLowerCase())
-    }
-    return true
-  })
-
-  const pageSize = CATEGORY_PAGE_SIZE
-  const paginatedArray = paginate(filteredCategories, pageSize, page)
   const handleChange = (event, value) => {
     setPage(value)
+    dispatch(getCategories(value, CATEGORY_PAGE_SIZE, searchInput))
   }
+
+  const categoryData = categories || []
 
   if (isLoading) {
     return <LoadingScreen />
   }
   if (error) {
-    return <Typography>Error occurred: {error}</Typography>
+    return <Typography color='error.main'>Error occurred: {error}</Typography>
   }
   return (
     <>
@@ -62,45 +64,50 @@ function CategoryList ({ handleOpenUpdateCategory }) {
         sx={{ my: 1, mr: 1, display: 'block' }}
         label='Search Categories'
         variant='outlined'
-        value={searchTerm}
-        onChange={(e) => {
-          setPage(1)
-          setSearchTerm(e.target.value)
-        }}
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
       />
-      <Typography mt={2} variant='h6' gutterBottom component='h1'>
-        Category List
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Description</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedArray.map((category) => (
-              <CustomizedTableRow
-                key={category._id}
-                onClick={() =>
-                  handleOpenUpdateCategory(
-                    category._id,
-                    category.name,
-                    category.description
-                  )}
-              >
-                <TableCell>{category.name}</TableCell>
-                <TableCell>{category.description}</TableCell>
-              </CustomizedTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {categories.length !== 0 && (
+      {categoryData.length > 0 && (
+        <Typography mt={2} variant='h6' gutterBottom component='h1'>
+          Category List
+        </Typography>
+      )}
+      {searchInput && categoryData.length === 0 && (
+        <Typography>No categories found.</Typography>
+      )}
+
+      {categoryData.length > 0 && (
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Description</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {categoryData.map((category) => (
+                <CustomizedTableRow
+                  key={category._id}
+                  onClick={() =>
+                    handleOpenUpdateCategory(
+                      category._id,
+                      category.name,
+                      category.description
+                    )}
+                >
+                  <TableCell>{category.name}</TableCell>
+                  <TableCell>{category.description}</TableCell>
+                </CustomizedTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+      {categoryData.length !== 0 && (
         <Stack my={2} spacing={2} alignItems='center'>
           <Pagination
-            count={Math.ceil(filteredCategories.length / pageSize)}
+            count={Math.ceil(totalCategories / CATEGORY_PAGE_SIZE)}
             page={page}
             onChange={handleChange}
           />

@@ -2,13 +2,14 @@ import { createSlice } from '@reduxjs/toolkit'
 import apiService from '../../app/apiService'
 import { cloudinaryUpload } from '../../utils/cloudinary'
 import { toast } from 'react-toastify'
-
+import { PRODUCT_PAGE_SIZE } from '../../app/config'
 const initialState = {
   isLoading: false,
   error: null,
-  products: []
+  products: [],
+  totalPages: 0,
+  totalProducts: 0
 }
-
 export const productSlice = createSlice({
   name: 'product',
   initialState,
@@ -27,7 +28,9 @@ export const productSlice = createSlice({
     getProductSuccess (state, action) {
       state.isLoading = false
       state.error = null
-      state.products = action.payload
+      state.products = action.payload.products
+      state.totalPages = action.payload.totalPages
+      state.totalProducts = action.payload.totalProducts
     },
     updateProductSuccess (state, action) {
       state.isLoading = false
@@ -39,7 +42,6 @@ export const productSlice = createSlice({
     }
   }
 })
-
 export const createProduct =
   ({ name, price, category, imageLink }) =>
     async (dispatch) => {
@@ -54,17 +56,40 @@ export const createProduct =
         })
         dispatch(productSlice.actions.createProductSuccess(response.data))
         toast.success('Created product successfully')
-        dispatch(getProducts())
+        dispatch(getProducts(1, PRODUCT_PAGE_SIZE))
       } catch (error) {
         dispatch(productSlice.actions.hasError(error.error))
         toast.error(error.error)
       }
     }
-
-export const getProducts = () => async (dispatch) => {
+export const getProducts = (page, limit = PRODUCT_PAGE_SIZE, searchTerm) => async (dispatch) => {
   dispatch(productSlice.actions.startLoading())
   try {
-    const response = await apiService.get('/products')
+    let url = `/products?page=${page}&limit=${limit}`
+    if (searchTerm) url += `&search=${searchTerm}`
+    const response = await apiService.get(url)
+    dispatch(productSlice.actions.getProductSuccess(response.data))
+  } catch (error) {
+    dispatch(productSlice.actions.hasError(error.error))
+    toast.error(error.error)
+  }
+}
+export const getProductsByCategory = (page, limit, categoryName) => async (dispatch) => {
+  dispatch(productSlice.actions.startLoading())
+  try {
+    const url = `/products/${categoryName}?page=${page}&limit=${limit}`
+    const response = await apiService.get(url)
+    dispatch(productSlice.actions.getProductSuccess(response.data))
+  } catch (error) {
+    dispatch(productSlice.actions.hasError(error.error))
+    toast.error(error.error)
+  }
+}
+
+export const getAllProducts = () => async (dispatch) => {
+  dispatch(productSlice.actions.startLoading())
+  try {
+    const response = await apiService.get('/products/all')
     dispatch(productSlice.actions.getProductSuccess(response.data))
   } catch (error) {
     dispatch(productSlice.actions.hasError(error.error))
@@ -92,7 +117,6 @@ export const updateProduct =
         toast.error(error.error)
       }
     }
-
 export const deleteProduct = (id) => async (dispatch) => {
   dispatch(productSlice.actions.startLoading())
   try {
@@ -105,5 +129,4 @@ export const deleteProduct = (id) => async (dispatch) => {
     toast.error(error.error)
   }
 }
-
 export default productSlice.reducer

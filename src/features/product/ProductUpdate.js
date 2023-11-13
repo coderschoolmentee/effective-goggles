@@ -136,19 +136,19 @@ function ProductUpdate ({
           </Typography>
           <Stack spacing={3}>
             <FTextField
-              sx={{ width: '30ch' }}
+              sx={{ width: '100%' }}
               name='name'
               label='Product Name'
               placeholder='New name'
             />
             <FTextField
               type='number'
-              sx={{ width: '30ch' }}
+              sx={{ width: '100%' }}
               name='price'
               label='Product Price'
               placeholder='New Price'
             />
-            <FSelect sx={{ width: '30ch' }} label='Select' name='category'>
+            <FSelect sx={{ width: '100%' }} label='Select' name='category'>
               {categories.map((option) => (
                 <MenuItem key={option._id} value={option.name}>
                   {option.name}
@@ -156,12 +156,12 @@ function ProductUpdate ({
               ))}
             </FSelect>
             <FUploadImage
-              sx={{ width: '20ch', zIndex: '2' }}
+              sx={{ width: '100%', zIndex: '2' }}
               name='imageLink'
               maxSize={3145728}
               onDrop={handleDrop}
             />
-            <Stack direction='row' spacing={2} alignItems='center'>
+            <Stack direction='row' justifyContent='flex-end' spacing={2} alignItems='center'>
               <Button onClick={openDeleteDialog}>
                 <DeleteIcon color='warning' />
               </Button>

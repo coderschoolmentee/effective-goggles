@@ -2,11 +2,12 @@ import { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import useAuth from '../hooks/useAuth'
 import { useReactToPrint } from 'react-to-print'
-import { getProducts } from '../features/product/productSlice'
+import { getAllProducts } from '../features/product/productSlice'
 import { createOrder } from '../features/order/orderSlice'
-import { getCategories } from '../features/category/categorySlice'
+import { getAllCategories } from '../features/category/categorySlice'
 import { formatNumber } from '../utils/formatNumber'
 import { toast } from 'react-toastify'
+import BackspaceIcon from '@mui/icons-material/Backspace'
 import { paginate } from '../utils/paginate'
 import {
   Typography,
@@ -39,6 +40,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }))
 function HomePage () {
   const auth = useAuth()
+  const { user } = useAuth()
   const componentRef = useRef()
   const [orderId, setOrderId] = useState(null)
   const [isPrintButtonDisabled, setIsPrintButtonDisabled] = useState(true)
@@ -50,6 +52,7 @@ function HomePage () {
   const [cart, setCart] = useState({})
   const [categoryFilter, setCategoryFilter] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [hasSearchTerm, setHasSearchTerm] = useState(false)
   const dispatch = useDispatch()
   const {
     isLoading: productIsLoading,
@@ -131,9 +134,15 @@ function HomePage () {
     setIsCheckoutButtonDisabled(true)
     setIsClearButtonDisabled(true)
   }
+  const handleClearSearch = () => {
+    setSearchTerm('')
+    setHasSearchTerm(false)
+    setCategoryFilter('')
+  }
   const handleCheckout = async () => {
     if (totalPrice > 0) {
       const orderData = {
+        staffName: user.name,
         totalAmount: totalPrice,
         items: Object.entries(cart).map(([productId, quantity]) => {
           const product = products.find((p) => p._id === productId)
@@ -161,9 +170,10 @@ function HomePage () {
     }
   }
   useEffect(() => {
-    dispatch(getProducts())
-    dispatch(getCategories())
+    dispatch(getAllProducts())
+    dispatch(getAllCategories())
   }, [dispatch])
+
   if (!auth.user) {
     return <p>You are not logged in.</p>
   }
@@ -176,40 +186,57 @@ function HomePage () {
   if (categoryError) {
     return <Typography>Error occurred: {categoryError}</Typography>
   }
+
   return (
     <Container sx={{ mt: 2 }}>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
+
           <Grid item xs={12} md={8}>
-            <TextField
-              size='small'
-              sx={{ mb: 2, mr: 1 }}
-              label='Search Products'
-              variant='outlined'
-              value={searchTerm}
-              onChange={(e) => {
-                setPage(1)
-                setSearchTerm(e.target.value)
-              }}
-            />
-            <Select
-              size='small'
-              value={categoryFilter}
-              onChange={(e) => {
-                setCategoryFilter(e.target.value)
-                setPage(1)
-              }}
-              displayEmpty
-            >
-              <MenuItem value=''>
-                <em>All</em>
-              </MenuItem>
-              {categories.map((category) => (
-                <MenuItem key={category._id} value={category.name}>
-                  {category.name}
+            <Stack direction='row' sx={{ mb: 2 }} spacing={1} alignItems='center'>
+              <TextField
+                size='small'
+                sx={{ mb: 2, mr: 1 }}
+                label='Search Products'
+                variant='outlined'
+                value={searchTerm}
+                onChange={(e) => {
+                  setPage(1)
+                  setSearchTerm(e.target.value)
+                  setHasSearchTerm(!!e.target.value.trim())
+                  setCategoryFilter('')
+                }}
+              />
+              {hasSearchTerm && (
+                <Button
+                  variant='outlined'
+                  size='small'
+                  onClick={handleClearSearch}
+                  sx={{ marginLeft: 1 }}
+                >
+                  <BackspaceIcon />
+                </Button>)}
+              <Select
+                size='small'
+                value={categoryFilter}
+                onChange={(e) => {
+                  setCategoryFilter(e.target.value)
+                  setPage(1)
+                }}
+                displayEmpty
+                disabled={hasSearchTerm}
+              >
+
+                <MenuItem value=''>
+                  <em>All</em>
                 </MenuItem>
-              ))}
-            </Select>
+                {categories.map((category) => (
+                  <MenuItem key={category._id} value={category.name}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Stack>
             <Grid container spacing={2}>
               {paginatedArray.map((product, index) => (
                 <CustomedGrid
@@ -221,12 +248,12 @@ function HomePage () {
                   onClick={() => addToCart(product)}
                 >
                   <Item>
-                    <img height={50} src={product.imageLink} alt='a drink' />
+                    <img width={100} src={product.imageLink} alt='a drink' />
                   </Item>
                   <Typography
-                    variant='body2'
-                    sx={{ fontSize: 12 }}
-                    color='text.secondary'
+                    variant='body1'
+                    sx={{ fontSize: 12, mt: 1 }}
+                    color='text.primary'
                     gutterBottom
                   >
                     {product.name}

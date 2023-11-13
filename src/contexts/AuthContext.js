@@ -97,8 +97,9 @@ function AuthProvider ({ children }) {
     })
     callback()
   }
-  const register = async ({ email, password, role }, callback) => {
+  const register = async ({ name, email, password, role }, callback) => {
     const response = await apiService.post('/users/register', {
+      name,
       email,
       password,
       role
