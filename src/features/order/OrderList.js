@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getOrders } from './orderSlice'
 import emailjs from '@emailjs/browser'
 import LoadingScreen from '../../components/LoadingScreen'
+import BackspaceIcon from '@mui/icons-material/Backspace'
 import {
   DEBOUNCE_DELAY,
   ORDER_PAGE_SIZE,
@@ -43,6 +44,7 @@ function OrderList () {
   const [selectedOrderId, setSelectedOrderId] = useState(null)
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [email, setEmail] = useState('')
+  const [hasSearchTerm, setHasSearchTerm] = useState(false)
   const pageSize = ORDER_PAGE_SIZE
 
   // eslint-disable-next-line
@@ -133,6 +135,17 @@ function OrderList () {
       )
     setSelectedOrderId(null)
   }
+  const handleClearSearch = () => {
+    setSearchTerm('')
+    setHasSearchTerm(false)
+  }
+  // const formatTime = (createdAt) => {
+  //   const date = new Date(createdAt);
+  //   const hours = date.getHours().toString().padStart(2, '0');
+  //   const minutes = date.getMinutes().toString().padStart(2, '0');
+  //   return `${hours}:${minutes}`;
+  // };
+
   if (isLoading) {
     return <LoadingScreen />
   }
@@ -143,17 +156,29 @@ function OrderList () {
 
   return (
     <>
-      <TextField
-        size='small'
-        sx={{ my: 1, mr: 1, display: 'block' }}
-        label='Search Orders by ID'
-        variant='outlined'
-        value={searchTerm}
-        onChange={(e) => {
-          setPage(1)
-          setSearchTerm(e.target.value)
-        }}
-      />
+      <Stack direction='row' sx={{ mb: 2 }} spacing={1} alignItems='center'>
+        <TextField
+          size='small'
+          sx={{ my: 1, mr: 1, display: 'block' }}
+          label='Search Orders by ID'
+          variant='outlined'
+          value={searchTerm}
+          onChange={(e) => {
+            setPage(1)
+            setSearchTerm(e.target.value)
+            setHasSearchTerm(!!e.target.value.trim())
+          }}
+        />
+        {hasSearchTerm && (
+          <Button
+            variant='outlined'
+            size='small'
+            onClick={handleClearSearch}
+            sx={{ marginLeft: 1 }}
+          >
+            <BackspaceIcon />
+          </Button>)}
+      </Stack>
       {orderData.length > 0 && (
         <Typography mt={2} variant='h6' gutterBottom component='h1'>
           Order List
@@ -178,7 +203,7 @@ function OrderList () {
               {orderData.slice().map((order) => (
                 <React.Fragment key={order._id}>
                   <CustomizedTableRow onClick={() => handleRowClick(order._id)}>
-                    <TableCell>{order.totalAmount}</TableCell>
+                    <TableCell>{formatNumber(order.totalAmount)}</TableCell>
                     <TableCell>
                       {new Date(order.createdAt).toLocaleString()}
                     </TableCell>

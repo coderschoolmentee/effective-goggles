@@ -9,7 +9,8 @@ import {
   TableBody,
   Stack,
   Pagination,
-  TextField
+  TextField,
+  Button
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useEffect, useState, useCallback } from 'react'
@@ -19,6 +20,7 @@ import { DEBOUNCE_DELAY, PRODUCT_PAGE_SIZE } from '../../app/config'
 import { formatNumber } from '../../utils/formatNumber'
 import LoadingScreen from '../../components/LoadingScreen'
 import { debounce } from 'lodash'
+import BackspaceIcon from '@mui/icons-material/Backspace'
 const CustomizedTableRow = styled(TableRow)`
   :hover {
     cursor: pointer;
@@ -27,6 +29,7 @@ const CustomizedTableRow = styled(TableRow)`
 function ProductList ({ handleOpenUpdateProduct }) {
   const [page, setPage] = useState(1)
   const [searchInput, setSearchInput] = useState('')
+  const [hasSearchTerm, setHasSearchTerm] = useState(false)
   const dispatch = useDispatch()
   const { isLoading, error, products, totalProducts } = useSelector(
     (state) => state.product
@@ -49,6 +52,10 @@ function ProductList ({ handleOpenUpdateProduct }) {
     console.log('Selected page:', value)
     dispatch(getProducts(value, PRODUCT_PAGE_SIZE, searchInput))
   }
+  const handleClearSearch = () => {
+    setSearchInput('')
+    setHasSearchTerm(false)
+  }
 
   if (isLoading) {
     return <LoadingScreen />
@@ -59,15 +66,31 @@ function ProductList ({ handleOpenUpdateProduct }) {
   const productData = products || []
   return (
     <>
-      {productData.length > 0 &&
-        <TextField
-          size='small'
-          sx={{ my: 1, mr: 1, display: 'block' }}
-          label='Search Products'
-          variant='outlined'
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />}
+      <Stack direction='row' sx={{ mb: 1 }} spacing={1} alignItems='center'>
+        {productData.length > 0 && (
+          <TextField
+            size='small'
+            sx={{ my: 1, mr: 1, display: 'block' }}
+            label='Search Products'
+            variant='outlined'
+            value={searchInput}
+            onChange={(e) => {
+              setSearchInput(e.target.value)
+              setHasSearchTerm(!!e.target.value.trim())
+            }}
+          />
+        )}
+        {hasSearchTerm && (
+          <Button
+            variant='outlined'
+            size='small'
+            onClick={handleClearSearch}
+            sx={{ marginLeft: 1 }}
+          >
+            <BackspaceIcon />
+          </Button>
+        )}
+      </Stack>
       {productData.length > 0 && (
         <Typography mt={2} variant='h6' gutterBottom component='h1'>
           Product List

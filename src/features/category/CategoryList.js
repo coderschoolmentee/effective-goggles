@@ -10,7 +10,8 @@ import {
   Stack,
   Pagination,
   TextField,
-  styled
+  styled,
+  Button
 } from '@mui/material'
 import { useEffect, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,6 +19,7 @@ import { getCategories } from './categorySlice'
 import LoadingScreen from '../../components/LoadingScreen'
 import { CATEGORY_PAGE_SIZE, DEBOUNCE_DELAY } from '../../app/config'
 import { debounce } from 'lodash'
+import BackspaceIcon from '@mui/icons-material/Backspace'
 const CustomizedTableRow = styled(TableRow)`
   :hover {
     cursor: pointer;
@@ -28,6 +30,7 @@ function CategoryList ({ handleOpenUpdateCategory }) {
   const dispatch = useDispatch()
   const [page, setPage] = useState(1)
   const [searchInput, setSearchInput] = useState('')
+  const [hasSearchTerm, setHasSearchTerm] = useState(false)
   const { isLoading, error, categories, totalCategories } = useSelector(
     (state) => state.category
   )
@@ -48,7 +51,10 @@ function CategoryList ({ handleOpenUpdateCategory }) {
     setPage(value)
     dispatch(getCategories(value, CATEGORY_PAGE_SIZE, searchInput))
   }
-
+  const handleClearSearch = () => {
+    setSearchInput('')
+    setHasSearchTerm(false)
+  }
   const categoryData = categories || []
 
   if (isLoading) {
@@ -59,14 +65,29 @@ function CategoryList ({ handleOpenUpdateCategory }) {
   }
   return (
     <>
-      <TextField
-        size='small'
-        sx={{ my: 1, mr: 1, display: 'block' }}
-        label='Search Categories'
-        variant='outlined'
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-      />
+      <Stack direction='row' sx={{ mb: 1 }} spacing={1} alignItems='center'>
+        <TextField
+          size='small'
+          sx={{ my: 1, mr: 1, display: 'block' }}
+          label='Search Categories'
+          variant='outlined'
+          value={searchInput}
+          onChange={(e) => {
+            setSearchInput(e.target.value)
+            setHasSearchTerm(!!e.target.value.trim())
+          }}
+        />
+        {hasSearchTerm && (
+          <Button
+            variant='outlined'
+            size='small'
+            onClick={handleClearSearch}
+            sx={{ marginLeft: 1 }}
+          >
+            <BackspaceIcon />
+          </Button>
+        )}
+      </Stack>
       {categoryData.length > 0 && (
         <Typography mt={2} variant='h6' gutterBottom component='h1'>
           Category List
@@ -82,6 +103,7 @@ function CategoryList ({ handleOpenUpdateCategory }) {
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
+                <TableCell>Number of Products</TableCell>
                 <TableCell>Description</TableCell>
               </TableRow>
             </TableHead>
@@ -97,6 +119,7 @@ function CategoryList ({ handleOpenUpdateCategory }) {
                     )}
                 >
                   <TableCell>{category.name}</TableCell>
+                  <TableCell>{category.productCount}</TableCell>
                   <TableCell>{category.description}</TableCell>
                 </CustomizedTableRow>
               ))}
@@ -104,7 +127,7 @@ function CategoryList ({ handleOpenUpdateCategory }) {
           </Table>
         </TableContainer>
       )}
-      {categoryData.length !== 0 && (
+      {(categoryData.length >= CATEGORY_PAGE_SIZE) && (
         <Stack my={2} spacing={2} alignItems='center'>
           <Pagination
             count={Math.ceil(totalCategories / CATEGORY_PAGE_SIZE)}

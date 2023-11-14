@@ -3,7 +3,7 @@ import ProductCreate from '../features/product/ProductCreate'
 import { Container, Button } from '@mui/material'
 import ProductList from '../features/product/ProductList'
 import ProductUpdate from '../features/product/ProductUpdate'
-import { getCategories } from '../features/category/categorySlice'
+import { getAllCategories } from '../features/category/categorySlice'
 import { useDispatch, useSelector } from 'react-redux'
 function ProductPage () {
   const { categories } = useSelector((state) => state.category)
@@ -17,7 +17,7 @@ function ProductPage () {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getCategories())
+    dispatch(getAllCategories())
   }, [dispatch])
   const handleOpenCreateProduct = () => {
     setIsCreateProductOpen(true)

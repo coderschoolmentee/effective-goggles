@@ -139,6 +139,18 @@ function HomePage () {
     setHasSearchTerm(false)
     setCategoryFilter('')
   }
+  const formatTime = () => {
+    const currentDate = new Date()
+    const day = currentDate.getDate().toString().padStart(2, '0')
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0')
+    const year = currentDate.getFullYear()
+
+    const hours = currentDate.getHours().toString().padStart(2, '0')
+    const minutes = currentDate.getMinutes().toString().padStart(2, '0')
+
+    return `${hours}:${minutes} ${day}/${month}/${year} `
+  }
+
   const handleCheckout = async () => {
     if (totalPrice > 0) {
       const orderData = {
@@ -160,7 +172,7 @@ function HomePage () {
       } catch (error) {
         toast.error(`Error creating order: ${error.message}`)
       }
-      setPrintTime(new Date().toLocaleString())
+      setPrintTime(formatTime())
       setIsCheckoutButtonDisabled(true)
       setIsPrintButtonDisabled(false)
     } else {

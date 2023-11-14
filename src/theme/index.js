@@ -8,7 +8,11 @@ const PRIMARY = {
   main: '#6D4C41'
 }
 const SECONDARY = {
-  main: '#43A047'
+  main: '#D2691E'
+}
+
+const NAV_TEXT = {
+  main: '#F0E68C'
 }
 
 const ERROR = {
@@ -20,7 +24,8 @@ function ThemeProvider ({ children }) {
     palette: {
       primary: PRIMARY,
       secondary: SECONDARY,
-      error: ERROR
+      error: ERROR,
+      nav: NAV_TEXT
     },
     shape: { borderRadius: 8 },
     components: {

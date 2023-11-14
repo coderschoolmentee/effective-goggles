@@ -12,7 +12,7 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale'
-import { useNavigate, Link as RouterLink } from 'react-router-dom'
+import { useNavigate, Link as RouterLink, useLocation } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 import { Divider } from '@mui/material'
 
@@ -30,6 +30,7 @@ const settings = [
 ]
 
 function ResponsiveAppBar () {
+  const location = useLocation()
   const [anchorElNav, setAnchorElNav] = useState(null)
   const [anchorElUser, setAnchorElUser] = useState(null)
 
@@ -161,6 +162,7 @@ function ResponsiveAppBar () {
               !isAdmin &&
               (page.name === 'Categories' ||
                 page.name === 'Stats' ||
+                page.name === 'Orders' ||
                 page.name === 'Products' ||
                 page.name === 'Customers')
                 ? null
@@ -168,7 +170,14 @@ function ResponsiveAppBar () {
                   <Button
                     key={page.name}
                     onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
+                    sx={{
+                      my: 2,
+                      display: 'block',
+                      color:
+                      location.pathname === page.link
+                        ? 'nav.main'
+                        : 'white'
+                    }}
                     component={RouterLink}
                     to={page.link}
                   >

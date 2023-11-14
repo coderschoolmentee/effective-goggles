@@ -15,7 +15,7 @@ function AuthRequire ({ children }) {
   }
 
   if (user?.role !== 'admin') {
-    const notAllowedPages = ['/categories', '/stats', '/products']
+    const notAllowedPages = ['/categories', '/stats', '/products', '/orders']
     if (notAllowedPages.includes(location.pathname)) {
       return <NotFoundPage />
     }

@@ -62,7 +62,7 @@ export const createCategory =
       }
     }
 
-export const getCategories = (page, limit = CATEGORY_PAGE_SIZE, search) => async (dispatch) => {
+export const getCategories = (page = 1, limit = CATEGORY_PAGE_SIZE, search) => async (dispatch) => {
   dispatch(categorySlice.actions.startLoading())
   try {
     let url = `/categories?page=${page}&limit=${limit}`

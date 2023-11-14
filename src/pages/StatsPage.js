@@ -6,10 +6,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { formatNumber } from '../utils/formatNumber'
 import LoadingScreen from '../components/LoadingScreen'
 function StatsPage () {
-  const { isLoading, error, orders } = useSelector((state) => state.order)
+  const { isLoading, error, orders, totalOrders } = useSelector((state) => state.order)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const dispatch = useDispatch()
-  console.log('selectedDate', selectedDate)
+  console.log('totalOrders', totalOrders)
 
   useEffect(() => {
     const formattedDate = new Date(
@@ -20,8 +20,8 @@ function StatsPage () {
 
     console.log('formattedDate', formattedDate)
 
-    dispatch(getOrders(1, 50, '', formattedDate))
-  }, [dispatch, selectedDate])
+    dispatch(getOrders(1, totalOrders, '', formattedDate))
+  }, [dispatch, selectedDate, totalOrders])
 
   const handleDateChange = (event) => {
     if (event.target.value === '') {
@@ -48,7 +48,7 @@ function StatsPage () {
       orderDate.getFullYear() === selectedDate.getFullYear()
     )
   })
-  const startHour = 1
+  const startHour = 6
   const endHour = 23
 
   const allHours = Array.from(
