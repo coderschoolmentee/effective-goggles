@@ -71,7 +71,6 @@ export const getOrders = (page = 1, limit = 10, searchTerm = '', date = '') => a
     if (date) url += `&date=${date}`
 
     const response = await apiService.get(url)
-    console.log('response', response)
     dispatch(getOrdersSuccess(response.data))
   } catch (error) {
     dispatch(hasError(error.message))

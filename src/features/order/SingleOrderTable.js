@@ -27,7 +27,7 @@ const SingleOrderTable = ({
 }) => {
   const hasProductsInCart = Object.keys(cart).length > 0
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: '720px' }}>
+    <TableContainer component={Paper} sx={{ maxHeight: '480px' }}>
       <Table ref={componentRef} aria-label='simple table'>
         <TableHead>
           <TableRow>

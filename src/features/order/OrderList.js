@@ -101,7 +101,7 @@ function OrderList () {
     const message = `
       <p>Hello,</p>
       <p>Here is your receipt details for order <i>${orderReceipt._id}</i>:</p>
-      <table style="border-collapse: collapse; width: 100%;">
+      <table style="border-collapse: collapse;">
         <thead>
           <tr>
             <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Item</th>
