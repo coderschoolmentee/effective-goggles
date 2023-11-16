@@ -69,7 +69,7 @@ function RegisterPage () {
       <Container maxWidth='xs' mb={4}>
         {!isVerificationSent && (
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing={3}>
+            <Stack spacing={3} mb={2}>
               {!!errors.responseError && (
                 <Alert severity='error'>{errors.responseError.error}</Alert>
               )}

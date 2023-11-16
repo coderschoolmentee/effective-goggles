@@ -206,7 +206,7 @@ function AccountPage () {
               </Stack>
             </TabPanel>
           </TabContext>
-          <Stack direction='row' spacing={2}>
+          <Stack width='25ch' direction='row' spacing={2} justifyContent='flex-end' >
             <LoadingButton
               type='submit'
               variant='contained'

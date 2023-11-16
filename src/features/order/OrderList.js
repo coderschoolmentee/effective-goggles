@@ -238,7 +238,7 @@ function OrderList () {
                           </Table>
                           <Stack spacing={2} mx={1} my={1} direction='row'>
                             <TextField
-                              sx={{ width: '20ch' }}
+                              sx={{ width: '100%' }}
                               type='email'
                               id='outlined-basic'
                               label='email'
