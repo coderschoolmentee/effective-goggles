@@ -6,10 +6,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { formatNumber } from '../utils/formatNumber'
 import LoadingScreen from '../components/LoadingScreen'
 function StatsPage () {
-  const { isLoading, error, orders, totalOrders } = useSelector((state) => state.order)
+  const { isLoading, error, orders, totalOrders } = useSelector(
+    (state) => state.order
+  )
   const [selectedDate, setSelectedDate] = useState(new Date())
   const dispatch = useDispatch()
-  console.log('totalOrders', totalOrders)
 
   useEffect(() => {
     const formattedDate = new Date(
@@ -17,8 +18,6 @@ function StatsPage () {
     )
       .toISOString()
       .split('T')[0]
-
-    console.log('formattedDate', formattedDate)
 
     dispatch(getOrders(1, totalOrders, '', formattedDate))
   }, [dispatch, selectedDate, totalOrders])
@@ -82,11 +81,13 @@ function StatsPage () {
           id='date'
           label='Select Date'
           type='date'
-          defaultValue={new Date(
-            selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000
-          )
-            .toISOString()
-            .split('T')[0]}
+          defaultValue={
+            new Date(
+              selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000
+            )
+              .toISOString()
+              .split('T')[0]
+          }
           onChange={handleDateChange}
           InputLabelProps={{
             shrink: true
